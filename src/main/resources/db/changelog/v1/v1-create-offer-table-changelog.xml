@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="v1-4" author="Woody Gray">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="offer"/>
+            </not>
+        </preConditions>
+        <createTable tableName="offer">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="id_user" type="bigint">
+                <constraints nullable="false" foreignKeyName="offer_user" references="public.user(id)"/>
+            </column>
+            <column name="id_offer_status" type="bigint">
+                <constraints nullable="false" foreignKeyName="offer_status" references="offer_status(id)"/>
+            </column>
+            <column name="promotion_start" type="date">
+                <constraints nullable="true"/>
+            </column>
+            <column name="promotion_end" type="date">
+                <constraints nullable="true"/>
+            </column>
+            <column name="title" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="text">
+                <constraints nullable="true"/>
+            </column>
+            <column name="price" type="money">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="v1-4.1" author="Woody Gray">
+        <preConditions onFail="MARK_RAN">
+            <tableIsEmpty tableName="offer"/>
+        </preConditions>
+        <loadData tableName="offer" file="db/data/offer-data.csv"/>
+    </changeSet>
+</databaseChangeLog>

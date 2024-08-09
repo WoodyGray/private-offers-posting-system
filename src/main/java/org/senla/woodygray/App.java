@@ -1,4 +1,4 @@
-package org.example;
+package org.senla.woodygray;
 
 /**
  * Hello world!

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="v1-7" author="Woody Gray">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="review"/>
+            </not>
+        </preConditions>
+        <createTable tableName="review">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="id_seller" type="bigint">
+                <constraints nullable="false" foreignKeyName="review_seller" references="public.user(id)"/>
+            </column>
+            <column name="id_sender" type="bigint">
+                <constraints nullable="false" foreignKeyName="review_sender" references="public.user(id)"/>
+            </column>
+            <column name="message_text" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="grade" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sent_at" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="v1-7.1" author="Woody Grade">
+        <preConditions onFail="MARK_RAN">
+            <tableIsEmpty tableName="review"/>
+        </preConditions>
+        <loadData tableName="review" file="db/data/review-data.csv"/>
+    </changeSet>
+</databaseChangeLog>
