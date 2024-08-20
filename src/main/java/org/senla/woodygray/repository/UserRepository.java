@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface UserRepository {
     public List<User> getAllUsers();
+    public Optional<User> findByPhoneNumber(String username);
+    public void saveUser(User user);
 }

@@ -32,4 +32,30 @@ public class UserRepositoryImpl implements UserRepository {
         session.close();
         return results;
     }
+
+    @Override
+    public Optional<User> findByPhoneNumber(String phoneNumber) {
+        EntityManager session = emf.createEntityManager();
+        session.getTransaction().begin();
+
+        User result = session
+                .createQuery("select u from User u join fetch u.role where u.phoneNumber = :phoneNumber", User.class)
+                .setParameter("phoneNumber", phoneNumber)
+                .getSingleResult();
+
+        session.getTransaction().commit();
+        session.close();
+        return Optional.ofNullable(result);
+    }
+
+    @Override
+    public void saveUser(User user) {
+        EntityManager session = emf.createEntityManager();
+        session.getTransaction().begin();
+
+        session.persist(user);
+
+        session.getTransaction().commit();
+        session.close();
+    }
 }

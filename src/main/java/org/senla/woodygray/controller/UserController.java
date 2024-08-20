@@ -37,4 +37,19 @@ public class UserController {
         }
     }
 
+    @GetMapping("/secured")
+    public String getSecuredInfo(){
+        return "Info for authenticate users";
+    }
+
+    @GetMapping("/unsecured")
+    public String getUnsecuredInfo(){
+        return "Public info";
+    }
+
+    @GetMapping("/admin")
+    public String getAdminInfo(){
+        return "Admin info";
+    }
+
 }
