@@ -12,5 +12,6 @@ public class Role {
     @GeneratedValue
     private Long id;
     @Column(name = "role_name")
-    private String roleName;
+    @Enumerated(EnumType.STRING)
+    private RoleType roleName;
 }

@@ -17,8 +17,14 @@
 
         <property name="show_sql">true</property>
 
-        <!-- TODO: mapping class -->
+
         <mapping class="org.senla.woodygray.model.User"/>
         <mapping class="org.senla.woodygray.model.Role"/>
+        <mapping class="org.senla.woodygray.model.Offer"/>
+        <mapping class="org.senla.woodygray.model.OfferStatus"/>
+        <mapping class="org.senla.woodygray.model.Comment"/>
+        <mapping class="org.senla.woodygray.model.Photo"/>
+        <mapping class="org.senla.woodygray.model.Review"/>
+        <mapping class="org.senla.woodygray.model.ChatMessage"/>
     </session-factory>
 </hibernate-configuration>
