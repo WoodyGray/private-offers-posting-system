@@ -4,6 +4,7 @@ package org.senla.woodygray.controller;
 import lombok.AllArgsConstructor;
 import org.senla.woodygray.model.User;
 import org.senla.woodygray.repository.UserRepository;
+import org.senla.woodygray.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +21,12 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         try {
-            List<User> users = new ArrayList<>(userRepository.getAllUsers());
+            List<User> users = new ArrayList<>(userService.getAllUsers());
 
             if (users.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
