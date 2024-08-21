@@ -22,27 +22,27 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(securedEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter{
     private final UserService userService;
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http
-                .csrf().disable()
-                .cors().disable()
-                .authorizeRequests()
-                .antMatchers("/user/secured").authenticated()
-                .antMatchers("/user/admin").hasRole("ADMIN")
-                .anyRequest().permitAll()
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
-                //TODO: add filter before
-        return http.build();
-
-    }
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+//        http
+//                .csrf().disable()
+//                .cors().disable()
+//                .authorizeRequests()
+//                .antMatchers("/user/secured").authenticated()
+//                .antMatchers("/user/admin").hasRole("ADMIN")
+//                .anyRequest().permitAll()
+//                .and()
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+//                .exceptionHandling()
+//                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+//                //TODO: add filter before
+//        return http.build();
+//
+//    }
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(){
@@ -67,8 +67,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        super.configure(auth);
 //    }
 //
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        super.configure(http);
-//    }
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/user/secured").authenticated()
+                .antMatchers("/user/admin").hasRole("ADMIN")
+                .anyRequest().permitAll();
+    }
 }
