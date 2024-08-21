@@ -1,4 +1,4 @@
-package org.senla.woodygray.config;
+package org.senla.woodygray.logger;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;

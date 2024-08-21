@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-@PropertySource("application.properties")
 public class JwtTokenUtils {
     @Value("${jwt.secret}")
     private String secret;

@@ -43,6 +43,7 @@ public class UserService implements UserDetailsService {
         );
     }
 
+    @Transactional
     public void createNewUser(User user){
         user.setRole(roleRepository.findByRoleName("ROLE_USER").get());
         //TODO:handle the null value

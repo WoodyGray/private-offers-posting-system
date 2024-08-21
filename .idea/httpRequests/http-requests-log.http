@@ -1,3 +1,21 @@
+GET http://localhost:8080/user
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.10)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2024-08-21T154814.404.html
+
+###
+
+GET http://localhost:8080/private_offers_posting_system/user
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.10)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2024-08-21T141014.404.html
+
+###
+
 GET http://localhost:8080/private_offers_posting_system/auth
 Connection: Keep-Alive
 User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.10)
