@@ -33,10 +33,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.liquibase</groupId>-->
+<!--            <artifactId>liquibase-core</artifactId>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -88,6 +88,26 @@
                             </exclude>
                         </excludes>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.liquibase</groupId>
+                    <artifactId>liquibase-maven-plugin</artifactId>
+                    <version>4.4.3</version>
+                    <configuration>
+                        <changeLogFile>${project.basedir}/src/main/resources/db/changelog/main-changelog.xml
+                        </changeLogFile>
+                        <url>jdbc:postgresql://localhost:5432/private-offers-posting-system</url>
+                        <username>postgres</username>
+                        <password>admin</password>
+                        <schemas>public</schemas>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.postgresql</groupId>
+                            <artifactId>postgresql</artifactId>
+                            <version>42.7.3</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
             </plugins>
 

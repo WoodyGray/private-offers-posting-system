@@ -1,3 +1,3 @@
 id_role,phone_number,first_name,last_name,hash_password,rating
-2,88888,Woody,Gray,gaf8g609a70as,0
-1,89002003040,Leonid,Rozanov,7a6fga76fadf6,0
+2,88888,Woody,Gray,$2y$10$BV.G/mIQEBeIKqBA8pjNhecnvsf1ghF2Q8/S9ffRKhPZ0J2APXCRa,0
+1,89002003040,Leonid,Rozanov,$2y$10$BAhEwr7A8D39LhMl5DInDO1zMLyHJwkC2WUdJO26AVZSm9Oe.VAhe,0

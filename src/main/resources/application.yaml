@@ -18,7 +18,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/private-offers-posting-system
     username: postgres
     password: admin
-  liquibase:
-    change-log: db/changelog/main-changelog.xml
-    liquibase-schema: public
+#  liquibase:
+#    change-log: db/changelog/main-changelog.xml
+#    liquibase-schema: public
 
