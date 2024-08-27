@@ -1,9 +1,8 @@
 package org.senla.woodygray.model;
 
-import jakarta.persistence.*;
 import lombok.Data;
-import lombok.With;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data

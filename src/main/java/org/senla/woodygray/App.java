@@ -1,6 +1,6 @@
 package org.senla.woodygray;
 
-import jakarta.persistence.EntityManagerFactory;
+
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -9,8 +9,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import javax.persistence.EntityManagerFactory;
+
 @SpringBootApplication
-@EnableWebMvc
 public class App {
 
     @Bean
