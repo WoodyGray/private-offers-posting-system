@@ -1,7 +1,6 @@
 package org.senla.woodygray.CRUD;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
+
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -10,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.senla.woodygray.model.User;
 
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 public class HibernateInsertTest {

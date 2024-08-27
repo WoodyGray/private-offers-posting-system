@@ -38,7 +38,7 @@ public class JwtTokenUtils {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(issuDate)
                 .setExpiration(expiredDate)
-                .signWith(SignatureAlgorithm.HS256, secret)
+                .signWith(SignatureAlgorithm.HS256, secret.getBytes())
                 .compact();
     }
 
@@ -52,8 +52,8 @@ public class JwtTokenUtils {
 
     public Claims getAllClaimsFromToken(String token){
         return Jwts.parser()
-                .setSigningKey(secret)
-                .parseClaimsJwt(token)
+                .setSigningKey(secret.getBytes())
+                .parseClaimsJws(token)
                 .getBody();
     }
 }
