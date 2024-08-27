@@ -1,3 +1,16 @@
-jwt:
-  secret: 984hg493gh0439rthr0429uruj2309yh937gc763fe87t3f89723gf
-  lifetime: 1m
+#jwt:
+#  secret: 984hg493gh0439rthr0429uruj2309yh937gc763fe87t3f89723gf
+#  lifetime: 1m
+
+spring:
+  jpa:
+    properties:
+      hibernate:
+        default_schema: public
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/private-offers-posting-system
+    username: postgres
+    password: admin
+  liquibase:
+    change-log: db/changelog/main-changelog.xml

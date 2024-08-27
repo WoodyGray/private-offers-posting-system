@@ -1,8 +1,8 @@
 package org.senla.woodygray.model;
 
+import jakarta.persistence.*;
 import lombok.Data;
 
-import javax.persistence.*;
 
 @Entity
 @Table(name = "offer_status", schema = "public")

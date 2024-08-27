@@ -1,5 +1,7 @@
 package org.senla.woodygray.repository.impl;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.senla.woodygray.model.Role;
@@ -8,8 +10,7 @@ import org.senla.woodygray.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+
 import java.util.List;
 import java.util.Optional;
 

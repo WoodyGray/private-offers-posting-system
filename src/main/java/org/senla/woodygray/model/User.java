@@ -1,10 +1,7 @@
 package org.senla.woodygray.model;
 
+import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
-import javax.persistence.*;
 
 @Data
 @Entity
