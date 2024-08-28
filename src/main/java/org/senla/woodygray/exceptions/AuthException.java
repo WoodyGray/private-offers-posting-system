@@ -5,12 +5,12 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class AppError {
+public class AuthException extends Exception{
     private int status;
     private String message;
     private Date timestamp;
 
-    public AppError(int status, String messagez) {
+    public AuthException(int status, String messagez) {
         this.status = status;
         this.message = message;
         this.timestamp = new Date();

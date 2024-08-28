@@ -3,7 +3,7 @@ package org.senla.woodygray.controller;
 import lombok.RequiredArgsConstructor;
 import org.senla.woodygray.dtos.JwtRequest;
 import org.senla.woodygray.dtos.JwtResponse;
-import org.senla.woodygray.exceptions.AppError;
+import org.senla.woodygray.exceptions.AuthException;
 import org.senla.woodygray.service.UserService;
 import org.senla.woodygray.util.JwtTokenUtils;
 import org.springframework.http.HttpStatus;
@@ -26,13 +26,10 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/auth")
-    public ResponseEntity<?> createAuthToken(@RequestBody JwtRequest authRequest){
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUserPhoneNumber(), authRequest.getPassword()));
-        } catch (BadCredentialsException e){
-            return new ResponseEntity<>(new AppError(HttpStatus.UNAUTHORIZED.value(),
-                    "Uncorrected phone number or password"), HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<JwtResponse> createAuthToken(@RequestBody JwtRequest authRequest){
+
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUserPhoneNumber(), authRequest.getPassword()));
+
         UserDetails userDetails = userService.loadUserByUsername(authRequest.getUserPhoneNumber());
         String token = jwtTokenUtils.generateToken(userDetails);
         return ResponseEntity.ok(new JwtResponse(token));

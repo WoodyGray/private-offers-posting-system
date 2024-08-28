@@ -1,5 +1,80 @@
 POST http://localhost:8080/auth
 Content-Type: application/json
+Content-Length: 60
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.10)
+Cookie: JSESSIONID=19589D402C6F2989E8B5727DB15986C1
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "userPhoneNumber": "890020030400",
+  "password": "110"
+}
+
+###
+
+POST http://localhost:8080/auth
+Content-Type: application/json
+Content-Length: 59
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.10)
+Cookie: JSESSIONID=19589D402C6F2989E8B5727DB15986C1
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "userPhoneNumber": "89002003040",
+  "password": "110"
+}
+
+<> 2024-08-28T123158.200.json
+
+###
+
+POST http://localhost:8080/auth
+Content-Type: application/json
+Content-Length: 60
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.10)
+Cookie: JSESSIONID=19589D402C6F2989E8B5727DB15986C1
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "userPhoneNumber": "890020030400",
+  "password": "110"
+}
+
+###
+
+POST http://localhost:8080/auth
+Content-Type: application/json
+Content-Length: 59
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.10)
+Cookie: JSESSIONID=19589D402C6F2989E8B5727DB15986C1
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "userPhoneNumber": "89002003040",
+  "password": "110"
+}
+
+<> 2024-08-28T122552.200.json
+
+###
+
+POST http://localhost:8080/auth
+Content-Length: 0
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.10)
+Cookie: JSESSIONID=19589D402C6F2989E8B5727DB15986C1
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2024-08-28T122538.400.json
+
+###
+
+POST http://localhost:8080/auth
+Content-Type: application/json
 Content-Length: 61
 Connection: Keep-Alive
 User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.10)
