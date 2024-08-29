@@ -1,5 +1,6 @@
 package org.senla.woodygray.repository.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.senla.woodygray.model.User;
 import org.senla.woodygray.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +12,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
-    @Autowired
-    private EntityManagerFactory emf;
+
+    private final EntityManagerFactory emf;
 
     @Override
     public List<User> getAllUsers() {
@@ -46,7 +48,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void saveUser(User user) {
+    public void save(User user) {
         EntityManager session = emf.createEntityManager();
         session.getTransaction().begin();
 

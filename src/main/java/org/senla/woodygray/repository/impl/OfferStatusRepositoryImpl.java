@@ -1,42 +1,35 @@
 package org.senla.woodygray.repository.impl;
 
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.senla.woodygray.model.OfferStatus;
+import org.senla.woodygray.model.OfferStatusType;
 import org.senla.woodygray.model.Role;
-import org.senla.woodygray.model.User;
-import org.senla.woodygray.repository.RoleRepository;
+import org.senla.woodygray.repository.OfferStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
-
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import java.util.List;
 import java.util.Optional;
-
 
 @Repository
 @RequiredArgsConstructor
-public class RoleRepositoryImpl implements RoleRepository {
+public class OfferStatusRepositoryImpl implements OfferStatusRepository {
+
 
     private final EntityManagerFactory emf;
 
     @Override
-    public Optional<Role> findByRoleName(String roleName) {
+    public Optional<OfferStatus> getPublishedStatus() {
         EntityManager session = emf.createEntityManager();
-        session.getTransaction().begin();
 
-
-        Role result = session
-                .createQuery("select r from Role r where r.roleName = :roleName", Role.class)
-                .setParameter("roleName", roleName)
+        OfferStatus result = session
+                .createQuery("select os from OfferStatus os where os.statusType = :statusType", OfferStatus.class)
+                .setParameter("statusType", OfferStatusType.PUBLISHED)
                 .getSingleResult();
-
-        session.getTransaction().commit();
+        //TODO:норм?
         session.close();
         return Optional.ofNullable(result);
+
     }
 }

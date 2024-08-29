@@ -6,11 +6,14 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.senla.woodygray.dtos.OfferDto;
 import org.senla.woodygray.model.*;
 
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+import javax.persistence.criteria.*;
 import java.util.List;
 
 public class HibernateSelectTest {
@@ -63,6 +66,38 @@ public class HibernateSelectTest {
         session.close();
 
     }
+
+    @Test
+    void get_offers_with_photo() {
+        EntityManager session = emf.createEntityManager();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<OfferDto> cq = cb.createQuery(OfferDto.class);
+
+        Root<Offer> offerRoot = cq.from(Offer.class);
+
+        Join<Offer, User> userJoin = offerRoot.join("user");
+
+        // Выбираем основные поля OfferDto без фотографий
+        cq.select(cb.construct(OfferDto.class,
+                userJoin.get("id"),
+                offerRoot.get("title"),
+                offerRoot.get("description"),
+                offerRoot.get("price")
+        ));
+
+        List<OfferDto> offers = session.createQuery(cq).getResultList();
+
+        // Теперь загружаем фотографии для каждого Offer
+        for (OfferDto offer : offers) {
+            List<Photo> photos = session.createQuery(
+                            "select p from Photo p where p.offer.id = :offerId", Photo.class)
+                    .setParameter("offerId", offer.getUserId())  // Нужно получить идентификатор Offer из OfferDto
+                    .getResultList();
+            offer.setPhotos(photos);  // Нужно добавить setPhotos(List<Photo>) в OfferDto
+        }
+
+    }
+
 
     @Test
     void get_offer_status_from_db(){
