@@ -3,7 +3,6 @@ package org.senla.woodygray.repository.impl;
 import lombok.RequiredArgsConstructor;
 import org.senla.woodygray.model.Photo;
 import org.senla.woodygray.repository.PhotoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

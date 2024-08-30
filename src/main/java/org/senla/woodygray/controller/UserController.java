@@ -1,15 +1,12 @@
 package org.senla.woodygray.controller;
 
 
-import lombok.AllArgsConstructor;
 import org.senla.woodygray.model.User;
-import org.senla.woodygray.repository.UserRepository;
 import org.senla.woodygray.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,22 +37,22 @@ public class UserController {
     }
 
     @GetMapping("/secured")
-    public String getSecuredInfo(){
+    public String getSecuredInfo() {
         return "Info for authenticate users";
     }
 
     @GetMapping("/unsecured")
-    public String getUnsecuredInfo(){
+    public String getUnsecuredInfo() {
         return "Public info";
     }
 
     @GetMapping("/admin")
-    public String getAdminInfo(){
+    public String getAdminInfo() {
         return "Admin info";
     }
 
     @GetMapping("/info")
-    public String userData(Principal principal){
+    public String userData(Principal principal) {
         return principal.getName();
     }
 

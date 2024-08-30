@@ -25,18 +25,26 @@ public class UserService implements UserDetailsService {
     private final JwtTokenUtils jwtTokenUtils;
 
     @Transactional
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         return userRepository.getAllUsers();
     }
 
     @Transactional
-    public Optional<User> findByPhoneNumber(String phoneNumber){
+    public Optional<User> findByPhoneNumber(String phoneNumber) {
         return userRepository.findByPhoneNumber(phoneNumber);
     }
 
     @Transactional
-    public Optional<User> findByToken(String token){
-        return userRepository.findByPhoneNumber(jwtTokenUtils.getUserPhoneNumber(token));
+    public User findByToken(String token) throws UserNotFoundException {
+        token = token.substring(7);
+        Optional<User> optionalUser = userRepository.findByPhoneNumber(jwtTokenUtils.getUserPhoneNumber(token));
+        User user;
+        if (optionalUser.isPresent()) {
+            user = optionalUser.get();
+            return user;
+        } else {
+            throw new UserNotFoundException("Can't find user by token");
+        }
     }
 
     @Override
@@ -56,17 +64,18 @@ public class UserService implements UserDetailsService {
     public Long getUserIdFromToken(String token) throws UserNotFoundException {
         String userPhoneNumber = jwtTokenUtils.getUserPhoneNumber(token);
         Optional<User> user = findByPhoneNumber(userPhoneNumber);
-        if (user.isEmpty()){
+        if (user.isEmpty()) {
             throw new UserNotFoundException("Can't find user or get phone number from token");
         }
         return user.get().getId();
     }
 
     @Transactional
-    public void createNewUser(User user){
+    public void createNewUser(User user) {
         user.setRole(roleRepository.findByRoleName("ROLE_USER").get());
         //TODO:handle the null value
         user.setRating(0);
         userRepository.save(user);
     }
+
 }

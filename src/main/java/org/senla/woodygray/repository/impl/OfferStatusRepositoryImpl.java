@@ -3,9 +3,7 @@ package org.senla.woodygray.repository.impl;
 import lombok.RequiredArgsConstructor;
 import org.senla.woodygray.model.OfferStatus;
 import org.senla.woodygray.model.OfferStatusType;
-import org.senla.woodygray.model.Role;
 import org.senla.woodygray.repository.OfferStatusRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

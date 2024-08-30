@@ -1,7 +1,6 @@
 package org.senla.woodygray.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.senla.woodygray.model.OfferStatus;
 import org.senla.woodygray.repository.OfferStatusRepository;
 import org.springframework.stereotype.Service;

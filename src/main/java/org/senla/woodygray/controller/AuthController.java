@@ -3,15 +3,10 @@ package org.senla.woodygray.controller;
 import lombok.RequiredArgsConstructor;
 import org.senla.woodygray.dtos.JwtRequest;
 import org.senla.woodygray.dtos.JwtResponse;
-import org.senla.woodygray.exceptions.AuthException;
 import org.senla.woodygray.service.UserService;
 import org.senla.woodygray.util.JwtTokenUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.authentication.AuthenticationManager;
-
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +21,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/auth")
-    public ResponseEntity<JwtResponse> createAuthToken(@RequestBody JwtRequest authRequest){
+    public ResponseEntity<JwtResponse> createAuthToken(@RequestBody JwtRequest authRequest) {
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUserPhoneNumber(), authRequest.getPassword()));
 

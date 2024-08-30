@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class JwtRequestFilter extends OncePerRequestFilter{
+public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtTokenUtils jwtTokenUtils;
 
@@ -33,20 +33,20 @@ public class JwtRequestFilter extends OncePerRequestFilter{
         String userPhoneNumber = null;
         String jwt = null;
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")){
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
             try {
                 userPhoneNumber = jwtTokenUtils.getUserPhoneNumber(jwt);
-            } catch (ExpiredJwtException e){
+            } catch (ExpiredJwtException e) {
                 log.debug("Lifetime is out");
-            } catch (SignatureException e){
+            } catch (SignatureException e) {
                 log.debug("signature is not correct");
-            } catch (Exception e){
+            } catch (Exception e) {
                 log.debug(e.getMessage());
             }
         }
 
-        if (userPhoneNumber != null && SecurityContextHolder.getContext().getAuthentication() == null){
+        if (userPhoneNumber != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                     userPhoneNumber,
                     null,

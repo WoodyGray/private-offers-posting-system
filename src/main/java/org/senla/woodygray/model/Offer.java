@@ -1,12 +1,8 @@
 package org.senla.woodygray.model;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -34,4 +30,4 @@ public class Offer {
     private String description;
     private Double price;
 
-}
+}//TODO:uuid

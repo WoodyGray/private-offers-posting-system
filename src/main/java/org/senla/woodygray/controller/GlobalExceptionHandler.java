@@ -14,27 +14,30 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException e){
+    public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException e) {
         logException(e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Uncorrected phone number or password");
     }
 
     @ExceptionHandler(OfferSearchException.class)
-    public ResponseEntity<String> handleOfferSearchException(OfferSearchException e){
+    public ResponseEntity<String> handleOfferSearchException(OfferSearchException e) {
         logException(e);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleOfferSearchException(Exception e){
+    public ResponseEntity<String> handleOfferSearchException(Exception e) {
         logException(e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(e.getMessage());
+        //TODO: add 400
     }
 
-    private void logException(Exception e){
+    //TODO: обработать другие exception
+
+    private void logException(Exception e) {
         log.error(String.format("%s in %s", e.getMessage(), e.getStackTrace()[0]));
     }
 }
