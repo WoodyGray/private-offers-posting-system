@@ -1,9 +1,7 @@
 package org.senla.woodygray.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.senla.woodygray.dtos.ChangeOfferStatusDto;
-import org.senla.woodygray.dtos.OfferDto;
-import org.senla.woodygray.dtos.SearchOfferRequest;
+import org.senla.woodygray.dtos.*;
 import org.senla.woodygray.exceptions.OfferAlreadyExistException;
 import org.senla.woodygray.exceptions.OfferChangeStatusException;
 import org.senla.woodygray.exceptions.OfferSearchException;
@@ -28,9 +26,9 @@ public class OfferController {
     private final JwtTokenUtils jwtTokenUtils;
 
     @GetMapping("/search")
-    public ResponseEntity<List<OfferDto>> searchOffer(@RequestBody SearchOfferRequest searchOfferRequest) throws OfferSearchException {
+    public ResponseEntity<List<OfferSearchResponse>> searchOffer(@RequestBody OfferSearchRequest searchOfferRequest) throws OfferSearchException {
 
-        List<OfferDto> result = offerService.searchOffer(
+        List<OfferSearchResponse> result = offerService.searchOffer(
                 searchOfferRequest.getKeyword(),
                 searchOfferRequest.getMinPrice(),
                 searchOfferRequest.getMaxPrice()
@@ -40,13 +38,12 @@ public class OfferController {
 
     }
 
-    @PostMapping()
+    @PostMapping("/{id}")
     public ResponseEntity<?> createOffer(
-            @RequestBody OfferDto offerDto,
-            @RequestHeader(value = "Authorization") String auth) throws UserNotFoundException, OfferAlreadyExistException {
-        User user = userService.findByToken(auth);
+            @RequestBody OfferUpdateRequest offerDto,
+            @RequestParam Long userId) throws UserNotFoundException, OfferAlreadyExistException {
 
-        offerService.createOffer(offerDto, user);
+        offerService.createOffer(offerDto, userId);
         //TODO: может передавать номер телефона пользователя?
 
         return new ResponseEntity<>(HttpStatus.OK);

@@ -44,7 +44,7 @@ public class HibernateSelectTest {
 
         List<User> resultss = session.createQuery("select u from User u join fetch u.role", User.class)
                 .getResultList();
-        resultss.forEach(System.out::println);
+//        resultss.forEach(System.out::println);
 
         session.getTransaction().commit();
         session.close();
@@ -60,10 +60,36 @@ public class HibernateSelectTest {
 
         List<Offer> resultss = session.createQuery("select o from Offer o ", Offer.class)
                 .getResultList();
-        resultss.forEach(System.out::println);
+//        resultss.forEach(System.out::println);
 
         session.getTransaction().commit();
         session.close();
+
+    }
+
+    @Test
+    void get_offers_from_criteria_api_db(){
+        EntityManager session = emf.createEntityManager();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Offer> cq = cb.createQuery(Offer.class);
+
+        // Определяем основной корень запроса (корень сущности Offer)
+        Root<Offer> offerRoot = cq.from(Offer.class);
+
+        // Если требуется сделать Join с сущностью User
+        Join<Offer, User> userJoin = offerRoot.join("user");
+
+        // Выбираем все поля сущности Offer (полный объект Offer)
+        cq.select(offerRoot);
+
+        // Выполняем запрос и получаем результат
+        List<Offer> offers = session.createQuery(cq).getResultList();
+
+        // Закрываем сессию
+        session.close();
+
+        // Выводим результат
+        System.out.println(offers);
 
     }
 
@@ -108,7 +134,7 @@ public class HibernateSelectTest {
 
         List<OfferStatus> resultss = session.createQuery("select o from OfferStatus o ", OfferStatus.class)
                 .getResultList();
-        resultss.forEach(System.out::println);
+//        resultss.forEach(System.out::println);
 
 
         session.getTransaction().commit();
@@ -125,7 +151,7 @@ public class HibernateSelectTest {
 
         List<Photo> resultss = session.createQuery("select p from Photo p ", Photo.class)
                 .getResultList();
-        resultss.forEach(System.out::println);
+//        resultss.forEach(System.out::println);
 
 
         session.getTransaction().commit();
@@ -142,7 +168,7 @@ public class HibernateSelectTest {
 
         List<Comment> resultss = session.createQuery("select c from Comment c ", Comment.class)
                 .getResultList();
-        resultss.forEach(comment -> System.out.println(comment.getId() + " " + comment.getMessageText()));
+//        resultss.forEach(comment -> System.out.println(comment.getId() + " " + comment.getMessageText()));
 
 
         session.getTransaction().commit();
@@ -159,7 +185,7 @@ public class HibernateSelectTest {
 
         List<Review> resultss = session.createQuery("select r from Review r ", Review.class)
                 .getResultList();
-        resultss.forEach(System.out::println);
+//        resultss.forEach(System.out::println);
 
 
         session.getTransaction().commit();
@@ -176,7 +202,7 @@ public class HibernateSelectTest {
 
         List<ChatMessage> resultss = session.createQuery("select cm from ChatMessage cm ", ChatMessage.class)
                 .getResultList();
-        resultss.forEach(System.out::println);
+//        resultss.forEach(System.out::println);
 
 
         session.getTransaction().commit();

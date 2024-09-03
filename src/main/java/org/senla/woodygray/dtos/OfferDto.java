@@ -1,6 +1,7 @@
 package org.senla.woodygray.dtos;
 
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.senla.woodygray.model.Photo;
@@ -8,8 +9,7 @@ import org.senla.woodygray.model.Photo;
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 public class OfferDto {
     private Long offerID;
     private Long userId;
@@ -21,16 +21,4 @@ public class OfferDto {
     private Date promotionBegin;
     private Date promotionEnd;
 
-    public OfferDto(long userId, String title, String description, double price) {
-        this.userId = userId;
-        this.title = title;
-        this.description = description;
-        this.price = price;
-    }
-
-    public void initPhotosFilePath() {
-        photosFilePath = photos.stream()
-                .map(Photo::getFilePath)
-                .toList();
-    }
 }

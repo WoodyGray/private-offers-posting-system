@@ -1,8 +1,12 @@
 package org.senla.woodygray.service;
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.senla.woodygray.dtos.ChangeOfferStatusDto;
 import org.senla.woodygray.dtos.OfferDto;
+import org.senla.woodygray.dtos.OfferSearchResponse;
+import org.senla.woodygray.dtos.OfferUpdateRequest;
+import org.senla.woodygray.dtos.mapper.OfferMapper;
 import org.senla.woodygray.exceptions.OfferAlreadyExistException;
 import org.senla.woodygray.exceptions.OfferChangeStatusException;
 import org.senla.woodygray.exceptions.OfferSearchException;
@@ -22,49 +26,55 @@ import java.util.Optional;
 public class OfferService {
     private final OfferRepository offerRepository;
     private final OfferStatusService offerStatusService;
+    private final OfferMapper offerMapper;
+    private final UserService userService;
 
     @Transactional
-    public List<OfferDto> searchOffer(String keyword, Double minPrice, Double maxPrice) throws OfferSearchException {
-        List<OfferDto> offers;
+    public List<OfferSearchResponse> searchOffer(String keyword, Double minPrice, Double maxPrice) throws OfferSearchException {
+
+        List<Offer> offers;
         if (keyword == null) {
             offers = offerRepository.findAll();
         } else {
             offers = offerRepository.findByTitleContainingOrDescriptionContaining(keyword, keyword);
         }
+        
+        List<OfferSearchResponse> offerSearchResponses = offerMapper.toOfferSearchResponseList(offers);
 
-        if (offers.isEmpty()) {
+        if (offerSearchResponses.isEmpty()) {
             throw new OfferSearchException("Result offer list is empty");
         }
 
-        offers.stream().forEach(offer -> {
-            offer.initPhotosFilePath();
-            offer.setPhotos(null);
-        });
-
         if (maxPrice == null && minPrice == null) {
-            return offers;
+            return offerSearchResponses;
         } else if (maxPrice == null) {
-            return offers.stream()
-                    .filter(o -> o.getPrice().compareTo(minPrice) >= 0)
+            return offerSearchResponses.stream()
+                    .filter(o -> o.price().compareTo(minPrice) >= 0)
                     .toList();
         } else if (minPrice == null) {
-            return offers.stream()
-                    .filter(o -> o.getPrice().compareTo(maxPrice) <= 0)
+            return offerSearchResponses.stream()
+                    .filter(o -> o.price().compareTo(maxPrice) <= 0)
                     .toList();
         } else {
-            return offers.stream()
-                    .filter(o -> o.getPrice().compareTo(minPrice) >= 0 &&
-                            o.getPrice().compareTo(maxPrice) <= 0)
+            return offerSearchResponses.stream()
+                    .filter(o -> o.price().compareTo(minPrice) >= 0 &&
+                            o.price().compareTo(maxPrice) <= 0)
                     .toList();
         }
     }
 
     @Transactional
-    public void createOffer(OfferDto offerDto, User user) throws OfferAlreadyExistException {
+    public void createOffer(OfferUpdateRequest offerDto, Long userId) throws OfferAlreadyExistException, UserNotFoundException {
         //TODO: сменить логику в пален аргументов
-        if (offerRepository.findOfferIdByTitle(offerDto.getTitle()).isEmpty()) {
+        User user = userService.findById(userId);
+        Hibernate.initialize(user.getOffers());
+
+        boolean offerExist = user.getOffers().stream()
+                .anyMatch(offer -> offer.getTitle().equalsIgnoreCase(offerDto.title()));
+
+        if (!offerExist) {
             Offer offer = new Offer();
-            offer.setUser(user);
+            offer.setUser(userService.findById(userId));
             offer.setOfferStatus(offerStatusService.getPublishedStatus());
             offer.setTitle(offerDto.getTitle());
             offer.setDescription(offerDto.getDescription());

@@ -3,6 +3,7 @@ package org.senla.woodygray.repository.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.senla.woodygray.model.Role;
+import org.senla.woodygray.model.RoleType;
 import org.senla.woodygray.repository.RoleRepository;
 import org.springframework.stereotype.Repository;
 
@@ -25,7 +26,7 @@ public class RoleRepositoryImpl implements RoleRepository {
 
         Role result = session
                 .createQuery("select r from Role r where r.roleName = :roleName", Role.class)
-                .setParameter("roleName", roleName)
+                .setParameter("roleName", RoleType.valueOf(roleName))
                 .getSingleResult();
 
         session.getTransaction().commit();

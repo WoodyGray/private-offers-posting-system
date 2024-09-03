@@ -31,19 +31,19 @@ public class HibernateInsertTest {
 
     }
 
-    @Test
-    void insert_user_in_db(){
-
-        EntityManager session = emf.createEntityManager();
-        session.getTransaction().begin();
-
-
-        List<User> resultss = session.createQuery("select u from User u join fetch u.role", User.class)
-                .getResultList();
-        resultss.forEach(System.out::println);
-
-        session.getTransaction().commit();
-        session.close();
-
-    }
+//    @Test
+//    void insert_user_in_db(){
+//
+//        EntityManager session = emf.createEntityManager();
+//        session.getTransaction().begin();
+//
+//
+//        List<User> resultss = session.createQuery("select u from User u join fetch u.role", User.class)
+//                .getResultList();
+//        resultss.forEach(System.out::println);
+//
+//        session.getTransaction().commit();
+//        session.close();
+//
+//    }
 }

@@ -8,11 +8,11 @@ import java.util.Optional;
 
 public interface OfferRepository {
 
-    List<OfferDto> findAll();
+    List<Offer> findAll();
 
     Optional<Long> findOfferIdByTitle(String title);
 
-    List<OfferDto> findByTitleContainingOrDescriptionContaining(String title, String description);
+    List<Offer> findByTitleContainingOrDescriptionContaining(String title, String description);
 
     void save(Offer offer);
 

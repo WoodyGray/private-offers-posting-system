@@ -27,6 +27,9 @@ public class GlobalExceptionHandler {
                 .body(e.getMessage());
     }
 
+    //TODO:roleNotFound exception
+    //TODO:userNotFoundException
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleOfferSearchException(Exception e) {
         logException(e);

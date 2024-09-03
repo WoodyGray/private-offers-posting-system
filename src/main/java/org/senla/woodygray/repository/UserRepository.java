@@ -11,4 +11,8 @@ public interface UserRepository {
     public Optional<User> findByPhoneNumber(String username);
 
     public void save(User user);
+
+    public Optional<User> findById(Long id);
+
+    public void update(User user);
 }
