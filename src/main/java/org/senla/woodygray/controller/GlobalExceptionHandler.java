@@ -29,6 +29,9 @@ public class GlobalExceptionHandler {
 
     //TODO:roleNotFound exception
     //TODO:userNotFoundException
+    //TODO:illegalArgumentException
+    //TODO:IOException
+    //TODO:offerChangeStatusException
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleOfferSearchException(Exception e) {

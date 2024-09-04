@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface OfferRepository {
 
     List<Offer> findAll();
+    public List<Offer> findAllByUserId(Long userId);
 
     Optional<Long> findOfferIdByTitle(String title);
 

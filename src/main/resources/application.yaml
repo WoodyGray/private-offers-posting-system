@@ -7,6 +7,8 @@ server:
   servlet:
     context-path: /
 
+photo:
+  source: G:\java\private-offers-posting-system
 
 spring:
   jpa:

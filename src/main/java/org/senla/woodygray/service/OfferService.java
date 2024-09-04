@@ -2,19 +2,15 @@ package org.senla.woodygray.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
-import org.senla.woodygray.dtos.ChangeOfferStatusDto;
-import org.senla.woodygray.dtos.OfferDto;
-import org.senla.woodygray.dtos.OfferSearchResponse;
-import org.senla.woodygray.dtos.OfferUpdateRequest;
+import org.senla.woodygray.dtos.*;
 import org.senla.woodygray.dtos.mapper.OfferMapper;
-import org.senla.woodygray.exceptions.OfferAlreadyExistException;
-import org.senla.woodygray.exceptions.OfferChangeStatusException;
-import org.senla.woodygray.exceptions.OfferSearchException;
-import org.senla.woodygray.exceptions.UserNotFoundException;
+import org.senla.woodygray.dtos.mapper.PhotoMapper;
+import org.senla.woodygray.exceptions.*;
 import org.senla.woodygray.model.Offer;
 import org.senla.woodygray.model.Photo;
 import org.senla.woodygray.model.User;
 import org.senla.woodygray.repository.OfferRepository;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +24,7 @@ public class OfferService {
     private final OfferStatusService offerStatusService;
     private final OfferMapper offerMapper;
     private final UserService userService;
+    private final PhotoMapper photoMapper;
 
     @Transactional
     public List<OfferSearchResponse> searchOffer(String keyword, Double minPrice, Double maxPrice) throws OfferSearchException {
@@ -38,7 +35,7 @@ public class OfferService {
         } else {
             offers = offerRepository.findByTitleContainingOrDescriptionContaining(keyword, keyword);
         }
-        
+
         List<OfferSearchResponse> offerSearchResponses = offerMapper.toOfferSearchResponseList(offers);
 
         if (offerSearchResponses.isEmpty()) {
@@ -64,72 +61,78 @@ public class OfferService {
     }
 
     @Transactional
-    public void createOffer(OfferUpdateRequest offerDto, Long userId) throws OfferAlreadyExistException, UserNotFoundException {
-        //TODO: сменить логику в пален аргументов
-        User user = userService.findById(userId);
-        Hibernate.initialize(user.getOffers());
+    public OfferUpdateResponse createOffer(OfferUpdateRequest offerDto, Long userId) throws OfferAlreadyExistException, UserNotFoundException {
 
-        boolean offerExist = user.getOffers().stream()
+        User user = userService.findById(userId);
+
+        boolean offerExist = offerRepository.findAllByUserId(userId).stream()
                 .anyMatch(offer -> offer.getTitle().equalsIgnoreCase(offerDto.title()));
 
-        if (!offerExist) {
-            Offer offer = new Offer();
-            offer.setUser(userService.findById(userId));
-            offer.setOfferStatus(offerStatusService.getPublishedStatus());
-            offer.setTitle(offerDto.getTitle());
-            offer.setDescription(offerDto.getDescription());
-            offer.setPrice(offerDto.getPrice());
-            //TODO: mapstruct
-
-            List<Photo> photos = offerDto.getPhotosFilePath().stream()
-                    .map(filePath -> new Photo(offer, filePath))
-                    .toList();
-
-            offer.setPhotos(photos);
-
-            offerRepository.save(offer);
-        } else {
-            throw new OfferAlreadyExistException(String.format("Can't create offer with title %s, cause offer already exist", offerDto.getTitle()));
+        if (offerExist) {
+            throw new OfferAlreadyExistException(String.format(
+                    "Can't create offer with title %s, cause offer already exist at user with id %s",
+                    offerDto.title(),
+                    userId)
+            );
         }
+        Offer offer = offerMapper.toOffer(offerDto);
+        offer.setId(null);
+        offer.setUser(user);
+        offer.setOfferStatus(offerStatusService.getPublishedStatus());
+
+        offer.getPhotos()
+                .forEach(photo -> photo.setOffer(offer));
+
+        offerRepository.save(offer);
+        return offerMapper.toOfferUpdateResponse(offer);
     }
 
     @Transactional
-    public void changeStatus(ChangeOfferStatusDto offerDto) throws OfferChangeStatusException, UserNotFoundException {
+    public OfferUpdateResponse changeStatus(OfferUpdateRequest offerDto, Long offerId) throws OfferChangeStatusException {
 
-        Optional<Offer> optionalOffer = offerRepository.findById(offerDto.getOfferID());
-        //TODO: is empty
-        Offer offer;
-
-        if (optionalOffer.isPresent() && !(offer = optionalOffer.get()).getOfferStatus().getId().equals(offerDto.getOfferStatusId())) {
-            offerRepository.updateStatus(offer.getId(), offerDto.getOfferStatusId());
-        } else {
-            throw new OfferChangeStatusException("offer is not exist or offer status id is not correct");
+        if (offerDto.statusId() == null) {
+            throw new BadCredentialsException("offer id or status id is required");
         }
-        //TODO: не уверен что это хорошая реализация
+
+        Optional<Offer> optionalOffer = offerRepository.findById(offerId);
+        if (optionalOffer.isEmpty()) {
+            throw new OfferChangeStatusException(String.format("can't find offer with id %s", offerId));
+        }
+
+        Offer offer = optionalOffer.get();
+        if (offer.getOfferStatus().getId().equals(offerDto.statusId())) {
+            throw new OfferChangeStatusException("offer status id is not correct");
+        }
+
+        offerRepository.updateStatus(offer.getId(), offerDto.statusId());
+        return offerMapper.toOfferUpdateResponse(offer);
+
     }
 
-    public void update(OfferDto offerDto) {
+    @Transactional
+    public OfferUpdateResponse update(OfferUpdateRequest offerDto, Long offerId) {
 
-        Optional<Offer> optionalOffer = offerRepository.findById(offerDto.getOfferID());
-
-        if (optionalOffer.isPresent()) {
-            Offer offer = optionalOffer.get();
-            if (offerDto.getTitle() != null) offer.setTitle(offerDto.getTitle());
-            if (offerDto.getDescription() != null) offer.setDescription(offerDto.getDescription());
-            if (offerDto.getPrice() != null) offer.setPrice(offerDto.getPrice());
-            if (offerDto.getPromotionBegin() != null) offer.setPromotionBegin(offerDto.getPromotionBegin());
-            if (offerDto.getPromotionEnd() != null) offer.setPromotionEnd(offerDto.getPromotionEnd());
-            if (offerDto.getPhotosFilePath() != null) {
-                List<Photo> addPhotos = offerDto.getPhotosFilePath().stream()
-                        .map(filePath -> new Photo(offer, filePath))
-                        .toList();
-                offer.getPhotos().addAll(addPhotos);
-            }
-            //TODO: mapstruct
-
-            offerRepository.update(offer);
-
-
+        Optional<Offer> optionalOffer = offerRepository.findById(offerId);
+        if (optionalOffer.isEmpty()) {
+            throw new OfferUpdateException(String.format("can't find offer with id %s", offerId));
         }
+
+        Offer offer = optionalOffer.get();
+
+        offerMapper.updateOfferFromDto(offerDto, offer);
+        if (offerDto.photos() != null) {
+            if (offer.getPhotos() == null || offer.getPhotos().isEmpty()) {
+                offer.setPhotos(photoMapper.toPhotos(offerDto.photos()));
+            }else {
+                photoMapper.updatePhotoList(offerDto.photos(), offer.getPhotos());
+            }
+            offer.getPhotos().stream()
+                    .filter(photo -> photo.getOffer() == null)
+                    .forEach(photo -> photo.setOffer(offer));
+        }
+
+        offerRepository.update(offer);
+
+        return offerMapper.toOfferUpdateResponse(offer);
     }
 }

@@ -29,45 +29,40 @@ public class OfferController {
     public ResponseEntity<List<OfferSearchResponse>> searchOffer(@RequestBody OfferSearchRequest searchOfferRequest) throws OfferSearchException {
 
         List<OfferSearchResponse> result = offerService.searchOffer(
-                searchOfferRequest.getKeyword(),
-                searchOfferRequest.getMinPrice(),
-                searchOfferRequest.getMaxPrice()
+                searchOfferRequest.keyword(),
+                searchOfferRequest.minPrice(),
+                searchOfferRequest.maxPrice()
         );
 
         return ResponseEntity.ok(result);
 
     }
 
-    @PostMapping("/{id}")
-    public ResponseEntity<?> createOffer(
+    @PostMapping("/{userId}")
+    public ResponseEntity<OfferUpdateResponse> createOffer(
             @RequestBody OfferUpdateRequest offerDto,
-            @RequestParam Long userId) throws UserNotFoundException, OfferAlreadyExistException {
+            @PathVariable Long userId) throws UserNotFoundException, OfferAlreadyExistException {
 
-        offerService.createOffer(offerDto, userId);
-        //TODO: может передавать номер телефона пользователя?
-
-        return new ResponseEntity<>(HttpStatus.OK);
-        //TODO: вернуть id
+        var or = offerService.createOffer(offerDto, userId);
+        return ResponseEntity.ok(or);
     }
 
-    @PatchMapping("/change.status")
-    public ResponseEntity<?> changeStatus(
-            @RequestBody ChangeOfferStatusDto changeOfferStatusDto
+    @PutMapping("/status/{id}")
+    public ResponseEntity<OfferUpdateResponse> changeStatus(
+            @RequestBody OfferUpdateRequest offerUpdateRequest,
+            @PathVariable Long id
     ) throws UserNotFoundException, OfferChangeStatusException {
 
-        if (changeOfferStatusDto.getOfferID() != null) {
-            offerService.changeStatus(changeOfferStatusDto);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return ResponseEntity.ok(offerService.changeStatus(offerUpdateRequest, id));
+
     }
 
-    @PatchMapping("/update")
-    public ResponseEntity<?> updateOffer(@RequestBody OfferDto offerDto) {
-        offerService.update(offerDto);
+    @PatchMapping("/{id}")
+    public ResponseEntity<OfferUpdateResponse> updateOffer(
+            @RequestBody OfferUpdateRequest offerDto,
+            @PathVariable Long id) {
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok(offerService.update(offerDto, id));
     }
 
 

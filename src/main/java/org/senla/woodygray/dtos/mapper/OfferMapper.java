@@ -1,9 +1,9 @@
 package org.senla.woodygray.dtos.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
+import org.mapstruct.*;
 import org.senla.woodygray.dtos.OfferSearchResponse;
+import org.senla.woodygray.dtos.OfferUpdateRequest;
+import org.senla.woodygray.dtos.OfferUpdateResponse;
 import org.senla.woodygray.dtos.PhotoDto;
 import org.senla.woodygray.model.Offer;
 import org.senla.woodygray.model.Photo;
@@ -23,6 +23,16 @@ public abstract class OfferMapper {
     @Mapping(source = "promotionEnd", target = "promotionEnd")
     @Mapping(source = "photos", target = "photos", qualifiedByName = "toPhotoDtos")
     public abstract OfferSearchResponse toOfferSearchResponse(Offer offer);
+
+    @Mapping(source = "photos", target = "photos", qualifiedByName = "toPhotos")
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    public abstract Offer toOffer(OfferUpdateRequest offerUpdateRequest);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    public abstract void updateOfferFromDto(OfferUpdateRequest offerUpdateRequest, @MappingTarget Offer offer);
+
+    @Mapping(source = "id", target = "offerId")
+    public abstract OfferUpdateResponse toOfferUpdateResponse(Offer offer);
 
     public abstract List<OfferSearchResponse> toOfferSearchResponseList(List<Offer> offers);
 

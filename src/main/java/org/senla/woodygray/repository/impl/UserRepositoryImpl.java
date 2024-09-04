@@ -35,7 +35,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<User> findByPhoneNumber(String phoneNumber) {
         EntityManager session = emf.createEntityManager();
-        session.getTransaction().begin();
+//        session.getTransaction().begin();
 
         User result = null;
         try {
@@ -47,8 +47,8 @@ public class UserRepositoryImpl implements UserRepository {
             //do nothing cause use optional
         }
 
-        session.getTransaction().commit();
-        session.close();
+//        session.getTransaction().commit();
+//        session.close();
         return Optional.ofNullable(result);
     }
 

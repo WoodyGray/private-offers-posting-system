@@ -41,6 +41,27 @@ public class OfferRepositoryImpl implements OfferRepository {
     }    //TODO: подумать над оптимизацией
 
     @Override
+    public List<Offer> findAllByUserId(Long userId) {
+        EntityManager session = emf.createEntityManager();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Offer> cq = cb.createQuery(Offer.class);
+
+        Root<Offer> offerRoot = cq.from(Offer.class);
+        Join<Offer, User> userJoin = offerRoot.join("user");
+
+        Predicate userIdPredicate = cb.equal(userJoin.get("id"), userId);
+
+        cq.where(userIdPredicate);
+        cq.select(offerRoot);
+
+        List<Offer> offers = session.createQuery(cq).getResultList();
+
+        session.close();
+
+        return offers;
+    }
+
+    @Override
     public Optional<Long> findOfferIdByTitle(String title) {
         EntityManager session = emf.createEntityManager();
 
@@ -124,7 +145,7 @@ public class OfferRepositoryImpl implements OfferRepository {
 
         Offer offer = session.find(Offer.class, offerID);
 
-        session.close();
+//        session.close();
         return Optional.ofNullable(offer);
     }
 
