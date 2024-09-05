@@ -1,6 +1,7 @@
 package org.senla.woodygray.dtos.mapper;
 
 import org.mapstruct.*;
+import org.senla.woodygray.dtos.offer.OfferGetSoldResponse;
 import org.senla.woodygray.dtos.offer.OfferSearchResponse;
 import org.senla.woodygray.dtos.offer.OfferUpdateRequest;
 import org.senla.woodygray.dtos.offer.OfferUpdateResponse;
@@ -34,4 +35,10 @@ public abstract class OfferMapper {
 
     public abstract List<OfferSearchResponse> toOfferSearchResponseList(List<Offer> offers);
 
+    @Mapping(source = "id", target = "offerID")
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "photos", target = "photos", qualifiedByName = "toPhotoDtos")
+    public abstract OfferGetSoldResponse toOfferGetSoldResponse(Offer offer);
+
+    public abstract List<OfferGetSoldResponse> toOfferGetSoldResponseList(List<Offer> offers);
 }

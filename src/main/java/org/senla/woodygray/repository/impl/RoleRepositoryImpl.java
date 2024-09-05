@@ -16,21 +16,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RoleRepositoryImpl implements RoleRepository {
 
-    private final EntityManagerFactory emf;
+    private final EntityManager em;
 
     @Override
     public Optional<Role> findByRoleName(String roleName) {
-        EntityManager session = emf.createEntityManager();
-        session.getTransaction().begin();
-
-
-        Role result = session
+        Role result = em
                 .createQuery("select r from Role r where r.roleName = :roleName", Role.class)
                 .setParameter("roleName", RoleType.valueOf(roleName))
                 .getSingleResult();
 
-        session.getTransaction().commit();
-        session.close();
         return Optional.ofNullable(result);
     }
 }

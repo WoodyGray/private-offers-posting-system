@@ -17,6 +17,9 @@ public class OfferStatusService {
     @Transactional
     public OfferStatus getPublishedStatus() {
         Optional<OfferStatus> offerStatus = offerStatusRepository.getPublishedStatus();
+        if (offerStatus.isEmpty()){
+            throw new OfferStatusNotFound("Can't found published status");
+        }
         return offerStatus.get();
         //TODO: что-то нужно сделать с optional
     }

@@ -105,6 +105,7 @@ public class UserService implements UserDetailsService {
         user.setHashPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setRole(roleService.findByRoleName("ROLE_USER"));
         //TODO:handle the null value
+        //TODO:user mapstruckt
         user.setRating(0);
         userRepository.save(user);
         return user;

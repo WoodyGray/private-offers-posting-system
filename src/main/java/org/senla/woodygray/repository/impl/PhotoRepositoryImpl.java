@@ -12,17 +12,11 @@ import javax.persistence.EntityManagerFactory;
 @RequiredArgsConstructor
 public class PhotoRepositoryImpl implements PhotoRepository {
 
-    private final EntityManagerFactory emf;
+    private final EntityManager em;
 
 
     @Override
     public void save(Photo photo) {
-        EntityManager session = emf.createEntityManager();
-        session.getTransaction().begin();
-
-        session.persist(photo);
-
-        session.getTransaction().commit();
-        session.close();
+        em.persist(photo);
     }
 }

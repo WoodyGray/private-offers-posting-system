@@ -15,18 +15,17 @@ import java.util.Optional;
 public class OfferStatusRepositoryImpl implements OfferStatusRepository {
 
 
-    private final EntityManagerFactory emf;
+    private final EntityManager em;
 
     @Override
     public Optional<OfferStatus> getPublishedStatus() {
-        EntityManager session = emf.createEntityManager();
 
-        OfferStatus result = session
+        OfferStatus result = em
                 .createQuery("select os from OfferStatus os where os.statusType = :statusType", OfferStatus.class)
                 .setParameter("statusType", OfferStatusType.PUBLISHED)
                 .getSingleResult();
-        //TODO:норм?
-        session.close();
+        //TODO:оставить этот метод или сделать универсальный?
+
         return Optional.ofNullable(result);
 
     }

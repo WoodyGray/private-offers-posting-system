@@ -2,7 +2,7 @@ package org.senla.woodygray.exceptions;
 
 import java.util.function.Supplier;
 
-public class UserNotFoundException extends Exception {
+public class UserNotFoundException extends NotFoundException {
     public UserNotFoundException(String message) {
         super(message);
     }

@@ -1,14 +1,8 @@
 package org.senla.woodygray.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.senla.woodygray.dtos.offer.OfferSearchRequest;
-import org.senla.woodygray.dtos.offer.OfferSearchResponse;
-import org.senla.woodygray.dtos.offer.OfferUpdateRequest;
-import org.senla.woodygray.dtos.offer.OfferUpdateResponse;
-import org.senla.woodygray.exceptions.OfferAlreadyExistException;
-import org.senla.woodygray.exceptions.OfferChangeStatusException;
-import org.senla.woodygray.exceptions.OfferSearchException;
-import org.senla.woodygray.exceptions.UserNotFoundException;
+import org.senla.woodygray.dtos.offer.*;
+import org.senla.woodygray.exceptions.*;
 import org.senla.woodygray.service.OfferService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +27,11 @@ public class OfferController {
 
         return ResponseEntity.ok(result);
 
+    }
+
+    @GetMapping("/sold/{userId}")
+    public ResponseEntity<List<OfferGetSoldResponse>> getSoldOffer(@PathVariable Long userId) throws OfferNotFoundException {
+        return ResponseEntity.ok(offerService.getSold(userId));
     }
 
     @PostMapping("/{userId}")

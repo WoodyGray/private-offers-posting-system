@@ -18,12 +18,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OfferRepositoryImpl implements OfferRepository {
 
-    private final EntityManagerFactory emf;
+    private final EntityManager em;
 
     @Override
     public List<Offer> findAll() {
-        EntityManager session = emf.createEntityManager();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Offer> cq = cb.createQuery(Offer.class);
 
         Root<Offer> offerRoot = cq.from(Offer.class);
@@ -31,17 +30,14 @@ public class OfferRepositoryImpl implements OfferRepository {
 
         cq.select(offerRoot).distinct(true);
 
-        List<Offer> offers = session.createQuery(cq).getResultList();
-
-        session.close();
+        List<Offer> offers = em.createQuery(cq).getResultList();
 
         return offers;
-    }    //TODO: подумать над оптимизацией
+    }
 
     @Override
     public List<Offer> findAllByUserId(Long userId) {
-        EntityManager session = emf.createEntityManager();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Offer> cq = cb.createQuery(Offer.class);
 
         Root<Offer> offerRoot = cq.from(Offer.class);
@@ -52,33 +48,14 @@ public class OfferRepositoryImpl implements OfferRepository {
         cq.where(userIdPredicate);
         cq.select(offerRoot);
 
-        List<Offer> offers = session.createQuery(cq).getResultList();
-
-        session.close();
+        List<Offer> offers = em.createQuery(cq).getResultList();
 
         return offers;
     }
 
     @Override
-    public Optional<Long> findOfferIdByTitle(String title) {
-        EntityManager session = emf.createEntityManager();
-
-        Long result = session
-                .createQuery("select o.id from Offer o where o.title = :title", Long.class)
-                .setParameter("title", title)
-                .getSingleResult();
-
-
-        session.close();
-        return Optional.ofNullable(result);
-        //TODO: сделать проверку только среди объявлений пользователей
-    }
-
-
-    @Override
     public List<Offer> findByTitleContainingOrDescriptionContaining(String title, String description) {
-        EntityManager session = emf.createEntityManager();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Offer> cq = cb.createQuery(Offer.class);
 
         Root<Offer> offerRoot = cq.from(Offer.class);
@@ -91,89 +68,67 @@ public class OfferRepositoryImpl implements OfferRepository {
 
         cq.where(cb.or(titlePredicate, descriptionPredicate));
 
-        List<Offer> offers = session.createQuery(cq).getResultList();
+        List<Offer> offers = em.createQuery(cq).getResultList();
 
-        session.close();
         return offers;
-    }    //TODO: подумать над оптимизацией
+    }
 
 
     @Override
     public void save(Offer offer) {
-        EntityManager session = emf.createEntityManager();
-        session.getTransaction().begin();
-
-        session.persist(offer);
-
-        session.getTransaction().commit();
-        session.close();
-        //TODO: без явного объявления транзакции не выполняются запросы
+        em.persist(offer);
     }
 
     @Override
     public void updateStatus(Long offerId, Long offerStatusId) {
-        EntityManager session = emf.createEntityManager();
-        session.getTransaction().begin();
 
-        OfferStatus offerStatus = session.find(OfferStatus.class, offerStatusId);
-        Offer offer = session.find(Offer.class, offerId);
+        OfferStatus offerStatus = em.find(OfferStatus.class, offerStatusId);
+        Offer offer = em.find(Offer.class, offerId);
         offer.setOfferStatus(offerStatus);
 
-        session.getTransaction().commit();
-        session.close();
     }
 
-    @Override
-    public List<Offer> findAllByUserPhoneNumber(String userPhoneNumber) {
-        EntityManager session = emf.createEntityManager();
-
-        List<Offer> result = session
-                .createQuery("select o from Offer o where o.user.phoneNumber = :userPhoneNumber", Offer.class)
-                .setParameter("userPhoneNumber", userPhoneNumber)
-                .getResultList();
-
-
-        session.close();
-        return result;
-    }
 
     @Override
     public Optional<Offer> findById(Long offerID) {
-        EntityManager session = emf.createEntityManager();
 
-        Offer offer = session.find(Offer.class, offerID);
+        Offer offer = em.find(Offer.class, offerID);
 
-//        session.close();
         return Optional.ofNullable(offer);
     }
 
     @Override
     public void update(Offer offer) {
-        EntityManager session = emf.createEntityManager();
-        session.getTransaction().begin();
-
-        session.merge(offer);
-
-        session.getTransaction().commit();
-        session.close();
+        em.merge(offer);
     }
 
     @Override
     public void deletePhotosFromOffer(Long id) {
-        EntityManager session = emf.createEntityManager();
-        session.getTransaction().begin();
 
-        Query query = session.createQuery("delete from Photo p where p.offer.id = :id");
+        Query query = em.createQuery("delete from Photo p where p.offer.id = :id");
         query.setParameter("id", id);
         query.executeUpdate();
 
         //TODO: не работает данная реализация, почему?
-//        Offer offer = session.find(Offer.class, id);
+//        Offer offer = em.find(Offer.class, id);
 //        offer.getPhotos().clear();
-//        session.merge(offer);
+//        em.merge(offer);
 
-        session.getTransaction().commit();
-        session.close();
+    }
+
+    @Override
+    public List<Offer> findSoldByUserId(Long userId) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Offer> cq = cb.createQuery(Offer.class);
+        Root<Offer> offerRoot = cq.from(Offer.class);
+
+        cq.select(offerRoot);
+
+        Predicate userIdPredicate = cb.equal(offerRoot.get("user").get("id"), userId);
+        Predicate soldStatusPredicate = cb.equal(offerRoot.get("offerStatus").get("id"), 2);
+        cq.where(cb.and(userIdPredicate, soldStatusPredicate));
+
+        return em.createQuery(cq).getResultList();
     }
 
 }

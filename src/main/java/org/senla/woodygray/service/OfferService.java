@@ -3,6 +3,7 @@ package org.senla.woodygray.service;
 import lombok.RequiredArgsConstructor;
 import org.senla.woodygray.dtos.mapper.OfferMapper;
 import org.senla.woodygray.dtos.mapper.PhotoMapper;
+import org.senla.woodygray.dtos.offer.OfferGetSoldResponse;
 import org.senla.woodygray.dtos.offer.OfferSearchResponse;
 import org.senla.woodygray.dtos.offer.OfferUpdateRequest;
 import org.senla.woodygray.dtos.offer.OfferUpdateResponse;
@@ -161,5 +162,12 @@ public class OfferService {
 
     public Offer findById(Long offerId) {
         return offerRepository.findById(offerId).orElse(null);
+    }
+
+    @Transactional
+    public List<OfferGetSoldResponse> getSold(Long userId) {
+        List<Offer> offers = offerRepository.findSoldByUserId(userId);
+
+        return offerMapper.toOfferGetSoldResponseList(offers);
     }
 }

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Table(name = "chat_message")
 public class ChatMessage {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_opponent")

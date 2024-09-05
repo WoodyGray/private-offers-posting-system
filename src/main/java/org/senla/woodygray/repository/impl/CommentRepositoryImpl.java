@@ -14,44 +14,30 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentRepositoryImpl implements CommentRepository {
 
-    private final EntityManagerFactory emf;
+    private final EntityManager em;
 
     @Override
     public List<Comment> findAllByOfferId(Long offerId) {
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
 
         Query query = em.createQuery("select c from Comment c where c.id = :offerId");
         query.setParameter("offerId", offerId);
         List<Comment> comments = query.getResultList();
 
-        em.getTransaction().commit();
         return comments;
     }
 
     @Override
     public void save(Comment comment) {
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-
         em.persist(comment);
-
-        em.getTransaction().commit();
-        em.close();
     }
 
     @Override
     public void deleteById(Long id) {
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
         try {
             Comment comment = em.find(Comment.class, id);
             em.remove(comment);
         }catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-        em.getTransaction().commit();
-        em.close();
     }
 }

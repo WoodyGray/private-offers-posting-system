@@ -95,9 +95,7 @@ public abstract class PhotoMapper {
             byte[] fileContent = Files.readAllBytes(file.toPath());
             return Base64.getEncoder().encodeToString(fileContent);
         } catch (IOException e) {
-            //TODO:
-            // Обработка ошибки чтения файла
-            return null;
+            throw new RuntimeException(e);
         }
     }
 

@@ -8,24 +8,21 @@ import java.util.Optional;
 public interface OfferRepository {
 
     List<Offer> findAll();
-    public List<Offer> findAllByUserId(Long userId);
-
-    Optional<Long> findOfferIdByTitle(String title);
+    List<Offer> findAllByUserId(Long userId);
 
     List<Offer> findByTitleContainingOrDescriptionContaining(String title, String description);
 
     void save(Offer offer);
 
-
     void updateStatus(Long offerId, Long offerStatusId);
-
-    List<Offer> findAllByUserPhoneNumber(String userPhoneNumber);
 
     Optional<Offer> findById(Long offerID);
 
     void update(Offer offer);
 
     void deletePhotosFromOffer(Long id);
+
+    List<Offer> findSoldByUserId(Long userId);
 
 
     //TODO: оставить модификатор?

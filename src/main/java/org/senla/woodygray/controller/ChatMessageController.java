@@ -1,7 +1,9 @@
 package org.senla.woodygray.controller;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.senla.woodygray.dtos.chatmessage.*;
+import org.senla.woodygray.exceptions.UserNotFoundException;
 import org.senla.woodygray.model.ChatMessage;
 import org.senla.woodygray.service.ChatMessageService;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/chat-message")
+@RequiredArgsConstructor
 public class ChatMessageController {
 
     private final ChatMessageService chatMessageService;
@@ -27,7 +30,7 @@ public class ChatMessageController {
     @PostMapping
     public ResponseEntity<ChatMessageCreateResponse> createChatMessage(
             @RequestBody ChatMessageCreateRequest chatMessageDto
-    ){
+    ) throws UserNotFoundException {
         return ResponseEntity.ok(chatMessageService.create(chatMessageDto));
     }
 
