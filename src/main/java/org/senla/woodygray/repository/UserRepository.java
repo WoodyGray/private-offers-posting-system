@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository {
-    public List<User> getAllUsers();
 
     public Optional<User> findByPhoneNumber(String username);
 

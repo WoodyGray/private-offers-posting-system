@@ -1,13 +1,13 @@
 package org.senla.woodygray.service;
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
-import org.senla.woodygray.dtos.*;
 import org.senla.woodygray.dtos.mapper.OfferMapper;
 import org.senla.woodygray.dtos.mapper.PhotoMapper;
+import org.senla.woodygray.dtos.offer.OfferSearchResponse;
+import org.senla.woodygray.dtos.offer.OfferUpdateRequest;
+import org.senla.woodygray.dtos.offer.OfferUpdateResponse;
 import org.senla.woodygray.exceptions.*;
 import org.senla.woodygray.model.Offer;
-import org.senla.woodygray.model.Photo;
 import org.senla.woodygray.model.User;
 import org.senla.woodygray.repository.OfferRepository;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -134,5 +134,32 @@ public class OfferService {
         offerRepository.update(offer);
 
         return offerMapper.toOfferUpdateResponse(offer);
+    }
+
+    @Transactional
+    public OfferUpdateResponse changePhotos(OfferUpdateRequest offerUpdateRequest, Long id) {
+        //TODO: сделать проверку на пользователя
+        if (offerUpdateRequest.photos() == null) {
+            throw new BadCredentialsException("offer photos is required");
+        }
+        Optional<Offer> optionalOffer = offerRepository.findById(id);
+        if (optionalOffer.isEmpty()) {
+            throw new OfferUpdateException(String.format("can't find offer with id %s", id));
+        }
+
+        Offer offer = optionalOffer.get();
+        offerRepository.deletePhotosFromOffer(id);
+
+        offer.setPhotos(photoMapper.toPhotos(offerUpdateRequest.photos()));
+        offer.getPhotos()
+                .forEach(photo -> photo.setOffer(offer));
+
+        offerRepository.update(offer);
+
+        return offerMapper.toOfferUpdateResponse(offer);
+    }
+
+    public Offer findById(Long offerId) {
+        return offerRepository.findById(offerId).orElse(null);
     }
 }

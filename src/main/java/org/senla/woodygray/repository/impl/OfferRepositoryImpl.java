@@ -1,18 +1,16 @@
 package org.senla.woodygray.repository.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.senla.woodygray.dtos.OfferDto;
 import org.senla.woodygray.model.Offer;
 import org.senla.woodygray.model.OfferStatus;
-import org.senla.woodygray.model.Photo;
 import org.senla.woodygray.model.User;
 import org.senla.woodygray.repository.OfferRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 import javax.persistence.criteria.*;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -155,6 +153,24 @@ public class OfferRepositoryImpl implements OfferRepository {
         session.getTransaction().begin();
 
         session.merge(offer);
+
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    @Override
+    public void deletePhotosFromOffer(Long id) {
+        EntityManager session = emf.createEntityManager();
+        session.getTransaction().begin();
+
+        Query query = session.createQuery("delete from Photo p where p.offer.id = :id");
+        query.setParameter("id", id);
+        query.executeUpdate();
+
+        //TODO: не работает данная реализация, почему?
+//        Offer offer = session.find(Offer.class, id);
+//        offer.getPhotos().clear();
+//        session.merge(offer);
 
         session.getTransaction().commit();
         session.close();

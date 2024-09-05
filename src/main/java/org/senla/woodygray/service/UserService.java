@@ -34,10 +34,6 @@ public class UserService implements UserDetailsService {
     private final JwtTokenUtils jwtTokenUtils;
     private final UserMapper userMapper;
 
-    @Transactional
-    public List<User> getAllUsers() {
-        return userRepository.getAllUsers();
-    }
 
     @Transactional
     public Optional<User> findByPhoneNumber(String phoneNumber) {
@@ -47,11 +43,13 @@ public class UserService implements UserDetailsService {
     @Transactional
     public User findById(Long id) throws UserNotFoundException {
         Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            return optionalUser.get();
-        }else {
+
+        if (optionalUser.isEmpty()) {
             throw new UserNotFoundException(id);
         }
+
+        return optionalUser.get();
+
     }
 
     @Transactional
@@ -122,7 +120,7 @@ public class UserService implements UserDetailsService {
             userMapper.updateUserFromDto(userChangesDto, user);
             userRepository.update(user);
             return ResponseEntity.ok("Update user success");
-        }else {
+        } else {
             throw new UserNotFoundException(id);
         }
     }

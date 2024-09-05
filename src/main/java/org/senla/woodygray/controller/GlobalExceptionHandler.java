@@ -32,6 +32,7 @@ public class GlobalExceptionHandler {
     //TODO:illegalArgumentException
     //TODO:IOException
     //TODO:offerChangeStatusException
+    //TODO:runtimeException
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleOfferSearchException(Exception e) {

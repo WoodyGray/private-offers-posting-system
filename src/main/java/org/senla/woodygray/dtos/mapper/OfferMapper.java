@@ -1,12 +1,10 @@
 package org.senla.woodygray.dtos.mapper;
 
 import org.mapstruct.*;
-import org.senla.woodygray.dtos.OfferSearchResponse;
-import org.senla.woodygray.dtos.OfferUpdateRequest;
-import org.senla.woodygray.dtos.OfferUpdateResponse;
-import org.senla.woodygray.dtos.PhotoDto;
+import org.senla.woodygray.dtos.offer.OfferSearchResponse;
+import org.senla.woodygray.dtos.offer.OfferUpdateRequest;
+import org.senla.woodygray.dtos.offer.OfferUpdateResponse;
 import org.senla.woodygray.model.Offer;
-import org.senla.woodygray.model.Photo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;

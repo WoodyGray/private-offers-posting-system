@@ -1,9 +1,7 @@
-package org.senla.woodygray.dtos;
+package org.senla.woodygray.dtos.offer;
 
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.senla.woodygray.model.Photo;
 
 import java.util.Date;

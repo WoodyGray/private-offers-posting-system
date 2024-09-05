@@ -1,6 +1,4 @@
-package org.senla.woodygray.dtos;
-
-import lombok.Data;
+package org.senla.woodygray.dtos.offer;
 
 
 public record OfferSearchRequest(

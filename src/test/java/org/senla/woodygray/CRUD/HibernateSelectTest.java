@@ -6,13 +6,12 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.senla.woodygray.dtos.OfferDto;
+import org.senla.woodygray.dtos.offer.OfferDto;
 import org.senla.woodygray.model.*;
 
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
 import javax.persistence.criteria.*;
 import java.util.List;
 

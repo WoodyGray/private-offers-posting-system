@@ -17,20 +17,6 @@ public class UserRepositoryImpl implements UserRepository {
 
     private final EntityManagerFactory emf;
 
-    @Override
-    public List<User> getAllUsers() {
-        EntityManager session = emf.createEntityManager();
-        session.getTransaction().begin();
-
-
-        List<User> results = session.createQuery("select u from User u join fetch u.role", User.class)
-                .getResultList();
-        results.forEach(System.out::println);
-
-        session.getTransaction().commit();
-        session.close();
-        return results;
-    }
 
     @Override
     public Optional<User> findByPhoneNumber(String phoneNumber) {

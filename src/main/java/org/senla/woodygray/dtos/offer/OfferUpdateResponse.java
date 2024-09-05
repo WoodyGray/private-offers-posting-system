@@ -1,4 +1,4 @@
-package org.senla.woodygray.dtos;
+package org.senla.woodygray.dtos.offer;
 
 public record OfferUpdateResponse(
         Long offerId,

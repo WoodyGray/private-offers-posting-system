@@ -1,16 +1,15 @@
 package org.senla.woodygray.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.senla.woodygray.dtos.*;
+import org.senla.woodygray.dtos.offer.OfferSearchRequest;
+import org.senla.woodygray.dtos.offer.OfferSearchResponse;
+import org.senla.woodygray.dtos.offer.OfferUpdateRequest;
+import org.senla.woodygray.dtos.offer.OfferUpdateResponse;
 import org.senla.woodygray.exceptions.OfferAlreadyExistException;
 import org.senla.woodygray.exceptions.OfferChangeStatusException;
 import org.senla.woodygray.exceptions.OfferSearchException;
 import org.senla.woodygray.exceptions.UserNotFoundException;
-import org.senla.woodygray.model.User;
 import org.senla.woodygray.service.OfferService;
-import org.senla.woodygray.service.UserService;
-import org.senla.woodygray.util.JwtTokenUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +21,6 @@ import java.util.List;
 public class OfferController {
 
     private final OfferService offerService;
-    private final UserService userService;
-    private final JwtTokenUtils jwtTokenUtils;
 
     @GetMapping("/search")
     public ResponseEntity<List<OfferSearchResponse>> searchOffer(@RequestBody OfferSearchRequest searchOfferRequest) throws OfferSearchException {
@@ -51,10 +48,18 @@ public class OfferController {
     public ResponseEntity<OfferUpdateResponse> changeStatus(
             @RequestBody OfferUpdateRequest offerUpdateRequest,
             @PathVariable Long id
-    ) throws UserNotFoundException, OfferChangeStatusException {
+    ) throws OfferChangeStatusException {
 
         return ResponseEntity.ok(offerService.changeStatus(offerUpdateRequest, id));
 
+    }
+
+    @PutMapping("/photo/{id}")
+    public ResponseEntity<OfferUpdateResponse> changePhoto(
+            @RequestBody OfferUpdateRequest offerUpdateRequest,
+            @PathVariable Long id
+     ){
+        return ResponseEntity.ok(offerService.changePhotos(offerUpdateRequest, id));
     }
 
     @PatchMapping("/{id}")

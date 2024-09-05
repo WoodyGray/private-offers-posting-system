@@ -1,6 +1,5 @@
 package org.senla.woodygray.repository;
 
-import org.senla.woodygray.dtos.OfferDto;
 import org.senla.woodygray.model.Offer;
 
 import java.util.List;
@@ -25,6 +24,8 @@ public interface OfferRepository {
     Optional<Offer> findById(Long offerID);
 
     void update(Offer offer);
+
+    void deletePhotosFromOffer(Long id);
 
 
     //TODO: оставить модификатор?

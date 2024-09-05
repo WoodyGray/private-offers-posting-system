@@ -1,4 +1,6 @@
-package org.senla.woodygray.dtos;
+package org.senla.woodygray.dtos.offer;
+
+import org.senla.woodygray.dtos.PhotoDto;
 
 import java.util.Date;
 import java.util.List;
