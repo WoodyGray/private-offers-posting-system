@@ -4,6 +4,7 @@ package org.senla.woodygray.controller;
 import lombok.RequiredArgsConstructor;
 import org.senla.woodygray.dtos.ReviewCreateRequest;
 import org.senla.woodygray.dtos.ReviewCreateResponse;
+import org.senla.woodygray.dtos.ReviewGetResponse;
 import org.senla.woodygray.dtos.UserChangesDto;
 import org.senla.woodygray.exceptions.UserModificationException;
 import org.senla.woodygray.exceptions.UserNotFoundException;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -38,6 +40,15 @@ public class UserController {
     ){
         return ResponseEntity.ok(
                 reviewService.createReview(reviewCreateRequest, token.substring(7)));
+    }
+
+    @GetMapping("/review/{userId}")
+    public ResponseEntity<List<ReviewGetResponse>> getReviewsFromUser(
+            @PathVariable Long userId
+    ){
+        return ResponseEntity.ok(
+                reviewService.getReviewsFromUser(userId)
+        );
     }
 
     @DeleteMapping("/review/{id}")

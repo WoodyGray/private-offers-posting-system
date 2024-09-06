@@ -23,7 +23,7 @@ public class User {
     @Column(name = "hash_password")
     private String hashPassword;
     @Column(name = "rating")
-    private Integer rating;
+    private Double rating;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_role")

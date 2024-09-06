@@ -5,11 +5,11 @@
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <changeSet id="v1-2" author="Woody Gray">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="user"/>
-            </not>
-        </preConditions>
+<!--        <preConditions onFail="MARK_RAN">-->
+<!--            <not>-->
+<!--                <tableExists tableName="user"/>-->
+<!--            </not>-->
+<!--        </preConditions>-->
         <createTable tableName="user">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
@@ -29,7 +29,7 @@
             <column name="hash_password" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
-            <column name="rating" type="int">
+            <column name="rating" type="double">
                 <constraints nullable="false"/>
             </column>
             
@@ -37,9 +37,19 @@
     </changeSet>
 
     <changeSet id="v1-2.1" author="Woody Gray">
-        <preConditions onFail="MARK_RAN">
-            <tableIsEmpty tableName="user"/>
-        </preConditions>
-        <loadData tableName="user" file="db/data/user-data.csv"/>
+<!--        <preConditions onFail="MARK_RAN">-->
+<!--            <tableIsEmpty tableName="user"/>-->
+<!--        </preConditions>-->
+        <loadData
+                file="db/data/user-data.csv"
+                separator=","
+                tableName="user">
+            <column name="id_role" type="NUMERIC"/>
+            <column name="phone_number" type="STRING"/>
+            <column name="first_name" type="STRING"/>
+            <column name="last_name" type="STRING"/>
+            <column name="hash_password" type="STRING"/>
+            <column name="rating" type="NUMERIC"/>
+        </loadData>
     </changeSet>
 </databaseChangeLog>

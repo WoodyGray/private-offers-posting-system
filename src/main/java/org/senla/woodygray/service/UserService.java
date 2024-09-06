@@ -91,7 +91,7 @@ public class UserService implements UserDetailsService {
     public void createNewUser(User user) throws RoleNotFoundException {
         user.setRole(roleService.findByRoleName("ROLE_USER"));
         //TODO:handle the null value
-        user.setRating(0);
+        user.setRating(0.0);
         userRepository.save(user);
     }
 
@@ -105,11 +105,12 @@ public class UserService implements UserDetailsService {
         user.setRole(roleService.findByRoleName("ROLE_USER"));
         //TODO:handle the null value
         //TODO:user mapstruckt
-        user.setRating(0);
+        user.setRating(0.0);
         userRepository.save(user);
         return user;
     }
 
+    @Transactional
     public ResponseEntity<?> updateUser(Long id, UserChangesDto userChangesDto, String token) throws UserNotFoundException, UserModificationException {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
@@ -123,5 +124,10 @@ public class UserService implements UserDetailsService {
         } else {
             throw new UserNotFoundException(id);
         }
+    }
+
+    @Transactional
+    public void update(User seller) {
+        userRepository.update(seller);
     }
 }

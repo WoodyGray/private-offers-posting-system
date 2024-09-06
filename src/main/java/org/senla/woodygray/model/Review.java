@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "review")
 public class Review {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_seller")
