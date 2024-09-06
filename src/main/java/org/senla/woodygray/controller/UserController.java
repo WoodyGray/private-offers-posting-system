@@ -31,14 +31,13 @@ public class UserController {
         //TODO:любой авторизированный пользователь не может изменить другого по id
     }
 
-    @PostMapping("/review/{idSeller}")
-    public ResponseEntity<ReviewCreateResponse> reviewUser(
-            @PathVariable Long idSeller,
+    @PostMapping("/review")
+    public ResponseEntity<ReviewCreateResponse> createReview(
             @RequestBody ReviewCreateRequest reviewCreateRequest,
             @RequestHeader(value = "Authorization") String token
     ){
         return ResponseEntity.ok(
-                reviewService.createReview(idSeller, reviewCreateRequest, token.substring(7)));
+                reviewService.createReview(reviewCreateRequest, token.substring(7)));
     }
 
     @DeleteMapping("/review/{id}")

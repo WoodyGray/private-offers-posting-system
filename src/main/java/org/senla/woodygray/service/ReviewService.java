@@ -7,13 +7,15 @@ import org.senla.woodygray.model.Review;
 import org.senla.woodygray.model.User;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
+
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
     private final UserService userService;
 
-    public ReviewCreateResponse createReview(Long idSeller, ReviewCreateRequest reviewCreateRequest, String token) {
-        User seller = userService.findById(idSeller);
+    public ReviewCreateResponse createReview(@Valid ReviewCreateRequest reviewCreateRequest, String token) {
+        User seller = userService.findById(reviewCreateRequest.idSeller());
         User sender = userService.findByToken(token);
 
         Review review = reviewMapper.toReview(reviewCreateRequest, seller, sender);
