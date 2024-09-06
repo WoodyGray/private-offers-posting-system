@@ -54,15 +54,14 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public User findByToken(String token) throws UserNotFoundException {
-        token = token.substring(7);
         Optional<User> optionalUser = userRepository.findByPhoneNumber(jwtTokenUtils.getUserPhoneNumber(token));
         User user;
-        if (optionalUser.isPresent()) {
-            user = optionalUser.get();
-            return user;
-        } else {
+        if (optionalUser.isEmpty()) {
             throw new UserNotFoundException("Can't find user by token");
         }
+        user = optionalUser.get();
+        return user;
+
     }
 
     @Override

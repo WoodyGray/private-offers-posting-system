@@ -15,6 +15,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,9 +63,10 @@ public class OfferService {
     }
 
     @Transactional
-    public OfferUpdateResponse createOffer(OfferUpdateRequest offerDto, Long userId) throws OfferAlreadyExistException, UserNotFoundException {
+    public OfferUpdateResponse createOffer(OfferUpdateRequest offerDto, String token) throws OfferAlreadyExistException, UserNotFoundException {
 
-        User user = userService.findById(userId);
+        User user = userService.findByToken(token);
+        Long userId = user.getId();
 
         boolean offerExist = offerRepository.findAllByUserId(userId).stream()
                 .anyMatch(offer -> offer.getTitle().equalsIgnoreCase(offerDto.title()));
@@ -84,16 +86,13 @@ public class OfferService {
         offer.getPhotos()
                 .forEach(photo -> photo.setOffer(offer));
 
+        //TODO:use mapstruckt
         offerRepository.save(offer);
         return offerMapper.toOfferUpdateResponse(offer);
     }
 
     @Transactional
-    public OfferUpdateResponse changeStatus(OfferUpdateRequest offerDto, Long offerId) throws OfferChangeStatusException {
-
-        if (offerDto.statusId() == null) {
-            throw new BadCredentialsException("offer id or status id is required");
-        }
+    public OfferUpdateResponse changeStatus(@Valid OfferUpdateRequest offerDto, Long offerId, String token) throws OfferChangeStatusException {
 
         Optional<Offer> optionalOffer = offerRepository.findById(offerId);
         if (optionalOffer.isEmpty()) {
@@ -101,6 +100,10 @@ public class OfferService {
         }
 
         Offer offer = optionalOffer.get();
+        Long userId = userService.getUserIdFromToken(token);
+        if (offer.getUser().getId() != userId) {
+            throw new OfferChangeStatusException("Only host of offer can change status");
+        }
         if (offer.getOfferStatus().getId().equals(offerDto.statusId())) {
             throw new OfferChangeStatusException("offer status id is not correct");
         }
@@ -165,7 +168,8 @@ public class OfferService {
     }
 
     @Transactional
-    public List<OfferGetSoldResponse> getSold(Long userId) {
+    public List<OfferGetSoldResponse> getSold(String token) {
+        Long userId = userService.getUserIdFromToken(token);
         List<Offer> offers = offerRepository.findSoldByUserId(userId);
 
         return offerMapper.toOfferGetSoldResponseList(offers);

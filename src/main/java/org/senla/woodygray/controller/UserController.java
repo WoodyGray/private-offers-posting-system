@@ -2,19 +2,17 @@ package org.senla.woodygray.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.senla.woodygray.dtos.ReviewCreateRequest;
+import org.senla.woodygray.dtos.ReviewCreateResponse;
 import org.senla.woodygray.dtos.UserChangesDto;
 import org.senla.woodygray.exceptions.UserModificationException;
 import org.senla.woodygray.exceptions.UserNotFoundException;
-import org.senla.woodygray.model.User;
+import org.senla.woodygray.service.ReviewService;
 import org.senla.woodygray.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -22,21 +20,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-
-//    @GetMapping
-//    public ResponseEntity<List<User>> getAllUsers() {
-//        try {
-//            List<User> users = new ArrayList<>(userService.getAllUsers());
-//
-//            if (users.isEmpty()) {
-//                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//            }
-//
-//            return new ResponseEntity<>(users, HttpStatus.OK);
-//        } catch (Exception ex) {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    private final ReviewService reviewService;
 
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateUser(
@@ -44,7 +28,26 @@ public class UserController {
             @RequestBody UserChangesDto userChangesDto,
             @RequestHeader(value = "Authorization") String auth) throws UserNotFoundException, UserModificationException {
         return userService.updateUser(id, userChangesDto, auth.substring(7));
-        //TODO:любой авторизированный пользователь может изменить другого по id, оставить это
+        //TODO:любой авторизированный пользователь не может изменить другого по id
+    }
+
+    @PostMapping("/review/{idSeller}")
+    public ResponseEntity<ReviewCreateResponse> reviewUser(
+            @PathVariable Long idSeller,
+            @RequestBody ReviewCreateRequest reviewCreateRequest,
+            @RequestHeader(value = "Authorization") String token
+    ){
+        return ResponseEntity.ok(
+                reviewService.createReview(idSeller, reviewCreateRequest, token.substring(7)));
+    }
+
+    @DeleteMapping("/review/{id}")
+    public ResponseEntity<String> deleteUser(
+            @PathVariable Long id,
+            @RequestHeader(value = "Authorization") String token
+    ){
+        reviewService.deleteReview(id, token.substring(7));
+        return ResponseEntity.ok("Deleted successfully");
     }
 
     @GetMapping("/secured")

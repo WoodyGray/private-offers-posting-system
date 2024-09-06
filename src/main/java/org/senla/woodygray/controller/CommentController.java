@@ -33,5 +33,6 @@ public class CommentController {
     public ResponseEntity<String> deleteComment(@PathVariable Long id) {
         commentService.deleteById(id);
         return ResponseEntity.ok("Successfully deleted comment");
+        //TODO: можно удалить только свой коммент
     }
 }

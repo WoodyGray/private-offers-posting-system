@@ -24,6 +24,7 @@ public class ChatMessageController {
             @RequestBody ChatMessageGetRequest chatMessageDto
     ) {
         return ResponseEntity.ok(chatMessageService.getAll(chatMessageDto));
+        //TODO: можно получить только свои переписки
     }
 
 
@@ -42,6 +43,7 @@ public class ChatMessageController {
     ){
         chatMessageService.delete(chatMessageDeleteDto, id);
         return ResponseEntity.ok("Successfully deleted chat message");
+        //TODO: удалять можно только свои сообщения
     }
 
 }
