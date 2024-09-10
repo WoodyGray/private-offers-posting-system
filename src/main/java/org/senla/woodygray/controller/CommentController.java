@@ -30,8 +30,10 @@ public class CommentController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteComment(@PathVariable Long id) {
-        commentService.deleteById(id);
+    public ResponseEntity<String> deleteComment(
+            @RequestHeader(value = "Authorization") String token,
+            @PathVariable Long id) {
+        commentService.deleteById(token.substring(7), id);
         return ResponseEntity.ok("Successfully deleted comment");
         //TODO: можно удалить только свой коммент
     }

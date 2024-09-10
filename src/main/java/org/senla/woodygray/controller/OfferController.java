@@ -29,11 +29,10 @@ public class OfferController {
 
     }
 
-    @GetMapping("/sold")
+    @GetMapping("/sold/{idUser}")
     public ResponseEntity<List<OfferGetSoldResponse>> getSoldOffer(
-            @RequestHeader(value = "Authorization") String token) throws OfferNotFoundException {
-        return ResponseEntity.ok(offerService.getSold(token.substring(7)));
-        //TODO: нет смысла в токене так как любой может смотреть иторию
+            @PathVariable Long idUser) throws OfferNotFoundException {
+        return ResponseEntity.ok(offerService.getSold(idUser));
     }
 
     @PostMapping()
@@ -43,8 +42,6 @@ public class OfferController {
 
         var or = offerService.createOffer(offerDto, token.substring(7));
         return ResponseEntity.ok(or);
-        //TODO:добавить проверку с токеном
-        //нельзя чтобы один пользователь смог создать offer другому
     }
 
     @PutMapping("/status/{id}")
@@ -55,24 +52,25 @@ public class OfferController {
     ) throws OfferChangeStatusException {
 
         return ResponseEntity.ok(offerService.changeStatus(offerUpdateRequest, id, token));
-        //TODO: только host должен иметь право менять статус
     }
 
     @PutMapping("/photo/{id}")
     public ResponseEntity<OfferUpdateResponse> changePhoto(
             @RequestBody OfferUpdateRequest offerUpdateRequest,
-            @PathVariable Long id
+            @PathVariable Long id,
+            @RequestHeader(value = "Authorization") String token
      ){
-        return ResponseEntity.ok(offerService.changePhotos(offerUpdateRequest, id));
-        //TODO: только host должен иметь право менять фотки
+        return ResponseEntity.ok(offerService.changePhotos(offerUpdateRequest, id, token));
+
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<OfferUpdateResponse> updateOffer(
             @RequestBody OfferUpdateRequest offerDto,
-            @PathVariable Long id) {
+            @PathVariable Long id,
+            @RequestHeader(value = "Authorization") String token) {
 
-        return ResponseEntity.ok(offerService.update(offerDto, id));
+        return ResponseEntity.ok(offerService.update(offerDto, id, token));
         //TODO: только host должен иметь изменять офер
     }
 

@@ -9,8 +9,10 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.*;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -41,6 +43,11 @@ public class ChatMessageRepositoryImpl implements ChatMessageRepository {
         List<ChatMessage> offers = em.createQuery(cq).getResultList();
 
         return offers;
+    }
+
+    @Override
+    public Optional<ChatMessage> findById(Long id) {
+        return Optional.ofNullable(em.find(ChatMessage.class, id));
     }
 
     @Override

@@ -113,6 +113,7 @@ public class OfferRepositoryImpl implements OfferRepository {
 //        Offer offer = em.find(Offer.class, id);
 //        offer.getPhotos().clear();
 //        em.merge(offer);
+        //em.flush
 
     }
 

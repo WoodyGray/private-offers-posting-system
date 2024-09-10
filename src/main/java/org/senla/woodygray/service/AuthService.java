@@ -6,6 +6,7 @@ import org.senla.woodygray.dtos.JwtResponse;
 import org.senla.woodygray.dtos.RegistrationUserDto;
 import org.senla.woodygray.dtos.UserDto;
 import org.senla.woodygray.model.User;
+import org.senla.woodygray.util.CustomUserDetails;
 import org.senla.woodygray.util.JwtTokenUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,7 +32,7 @@ public class AuthService {
 
     public ResponseEntity<JwtResponse> createAuthToken(@RequestBody JwtRequest authRequest) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUserPhoneNumber(), authRequest.getPassword()));
-        UserDetails userDetails = userService.loadUserByUsername(authRequest.getUserPhoneNumber());
+        CustomUserDetails userDetails = userService.loadUserByUsername(authRequest.getUserPhoneNumber());
         String token = jwtTokenUtils.generateToken(userDetails);
         return ResponseEntity.ok(new JwtResponse(token));
     }

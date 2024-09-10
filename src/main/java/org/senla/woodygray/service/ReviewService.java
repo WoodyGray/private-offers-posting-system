@@ -10,6 +10,7 @@ import org.senla.woodygray.exceptions.ReviewNotFoundException;
 import org.senla.woodygray.model.Review;
 import org.senla.woodygray.model.User;
 import org.senla.woodygray.repository.ReviewRepository;
+import org.senla.woodygray.util.JwtTokenUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ public class ReviewService {
     private final UserService userService;
     private final ReviewMapper reviewMapper;
     private final ReviewRepository reviewRepository;
+    private final JwtTokenUtils jwtTokenUtils;
 
     @Transactional
     public ReviewCreateResponse createReview(@Valid ReviewCreateRequest reviewCreateRequest, String token) {
@@ -53,11 +55,14 @@ public class ReviewService {
         }
 
         Review review = reviewOptional.get();
-        Long userId = userService.findByToken(token).getId();
-        if (!userId.equals(review.getSender().getId())) {
+        User user = userService.findByToken(token);
+        if (!user.getId().equals(review.getSender().getId())) {
             throw new ReviewDeleteException("only host can delete his review");
         }
+
+        long cntOfReview = reviewRepository.getAllByUserId(user.getId()).size();
+        user.setRating((user.getRating()*cntOfReview - review.getGrade())/cntOfReview-1);
         reviewRepository.delete(review);
-        //TODO: подумать над откатом отзыва
+        userService.update(user);
     }
 }

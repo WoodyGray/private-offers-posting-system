@@ -24,13 +24,15 @@ public class JwtTokenUtils {
     @Value("${jwt.lifetime}")
     private Duration jwtLifetime;
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(CustomUserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         List<String> roleList = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
         claims.put("roles", roleList);
+        claims.put("userId", userDetails.getUserId());
 
+        //TODO: use new date api
         Date issuDate = new Date();
         Date expiredDate = new Date(issuDate.getTime() + jwtLifetime.toMillis());
         return Jwts.builder()
@@ -48,6 +50,10 @@ public class JwtTokenUtils {
 
     public List<String> getUserRoles(String token) {
         return getAllClaimsFromToken(token).get("roles", List.class);
+    }
+
+    public Long getUserId(String token) {
+        return getAllClaimsFromToken(token).get("userId", Long.class);
     }
 
     public Claims getAllClaimsFromToken(String token) {

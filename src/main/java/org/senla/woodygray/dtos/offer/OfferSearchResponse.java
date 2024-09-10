@@ -2,6 +2,7 @@ package org.senla.woodygray.dtos.offer;
 
 import org.senla.woodygray.dtos.PhotoDto;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public record OfferSearchResponse(
     String description,
     Double price,
     List<PhotoDto> photos,
-    Date promotionBegin,
-    Date promotionEnd
+    LocalDate promotionBegin,
+    LocalDate promotionEnd
 ){
 }

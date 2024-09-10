@@ -11,7 +11,7 @@ public record OfferUpdateRequest(
         String description,
         Double price,
         @NotNull(message = "status id can't be null") Long statusId,
-        List<PhotoDto> photos,
+        @NotNull(message = "photos can't be null") List<PhotoDto> photos,
         Date promotionBegin,
         Date promotionEnd
 ){

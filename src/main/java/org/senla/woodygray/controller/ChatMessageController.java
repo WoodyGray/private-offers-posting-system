@@ -19,29 +19,31 @@ public class ChatMessageController {
 
     private final ChatMessageService chatMessageService;
 
-    @GetMapping
+    @GetMapping("/{idOpponent}")
     public ResponseEntity<List<ChatMessageGetResponse>> getChatMessages(
-            @RequestBody ChatMessageGetRequest chatMessageDto
+            @RequestHeader(value = "Authorization") String token,
+            @PathVariable Long idOpponent
     ) {
-        return ResponseEntity.ok(chatMessageService.getAll(chatMessageDto));
+        return ResponseEntity.ok(chatMessageService.getAll(token.substring(7), idOpponent));
         //TODO: можно получить только свои переписки
     }
 
 
     @PostMapping
     public ResponseEntity<ChatMessageCreateResponse> createChatMessage(
-            @RequestBody ChatMessageCreateRequest chatMessageDto
+            @RequestBody ChatMessageCreateRequest chatMessageDto,
+            @RequestHeader(value = "Authorization") String token
     ) throws UserNotFoundException {
-        return ResponseEntity.ok(chatMessageService.create(chatMessageDto));
+        return ResponseEntity.ok(chatMessageService.create(chatMessageDto, token.substring(7)));
     }
 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteChatMessage(
             @PathVariable Long id,
-            @RequestBody ChatMessageDeleteRequest chatMessageDeleteDto
+            @RequestHeader(value = "Authorization") String token
     ){
-        chatMessageService.delete(chatMessageDeleteDto, id);
+        chatMessageService.delete(token, id);
         return ResponseEntity.ok("Successfully deleted chat message");
         //TODO: удалять можно только свои сообщения
     }

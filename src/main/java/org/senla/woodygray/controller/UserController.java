@@ -24,40 +24,12 @@ public class UserController {
     private final UserService userService;
     private final ReviewService reviewService;
 
-    @PatchMapping("/{id}")
+    @PatchMapping()
     public ResponseEntity<?> updateUser(
-            @PathVariable Long id,
             @RequestBody UserChangesDto userChangesDto,
-            @RequestHeader(value = "Authorization") String auth) throws UserNotFoundException, UserModificationException {
-        return userService.updateUser(id, userChangesDto, auth.substring(7));
+            @RequestHeader(value = "Authorization") String token) throws UserNotFoundException, UserModificationException {
+        return userService.updateUser(userChangesDto, token.substring(7));
         //TODO:любой авторизированный пользователь не может изменить другого по id
-    }
-
-    @PostMapping("/review")
-    public ResponseEntity<ReviewCreateResponse> createReview(
-            @RequestBody ReviewCreateRequest reviewCreateRequest,
-            @RequestHeader(value = "Authorization") String token
-    ){
-        return ResponseEntity.ok(
-                reviewService.createReview(reviewCreateRequest, token.substring(7)));
-    }
-
-    @GetMapping("/review/{userId}")
-    public ResponseEntity<List<ReviewGetResponse>> getReviewsFromUser(
-            @PathVariable Long userId
-    ){
-        return ResponseEntity.ok(
-                reviewService.getReviewsFromUser(userId)
-        );
-    }
-
-    @DeleteMapping("/review/{id}")
-    public ResponseEntity<String> deleteUser(
-            @PathVariable Long id,
-            @RequestHeader(value = "Authorization") String token
-    ){
-        reviewService.deleteReview(id, token.substring(7));
-        return ResponseEntity.ok("Deleted successfully");
     }
 
     @GetMapping("/secured")

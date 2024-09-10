@@ -10,6 +10,7 @@ import org.senla.woodygray.exceptions.UserNotFoundException;
 import org.senla.woodygray.model.User;
 import org.senla.woodygray.repository.RoleRepository;
 import org.senla.woodygray.repository.UserRepository;
+import org.senla.woodygray.util.CustomUserDetails;
 import org.senla.woodygray.util.JwtTokenUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -66,14 +67,15 @@ public class UserService implements UserDetailsService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String userPhoneNumber) throws UsernameNotFoundException {
+    public CustomUserDetails loadUserByUsername(String userPhoneNumber) throws UsernameNotFoundException {
         User user = findByPhoneNumber(userPhoneNumber).orElseThrow(() -> new UsernameNotFoundException(
                 String.format("User with phone '%s' not found", userPhoneNumber)
         ));
-        return new org.springframework.security.core.userdetails.User(
+        return new CustomUserDetails(
                 user.getPhoneNumber(),
                 user.getHashPassword(),
-                Stream.of(new SimpleGrantedAuthority(user.getRole().getRoleName().toString())).toList()
+                Stream.of(new SimpleGrantedAuthority(user.getRole().getRoleName().toString())).toList(),
+                user.getId()
         );
     }
 
@@ -111,19 +113,17 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public ResponseEntity<?> updateUser(Long id, UserChangesDto userChangesDto, String token) throws UserNotFoundException, UserModificationException {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            if (!jwtTokenUtils.getUserPhoneNumber(token).equals(user.getPhoneNumber())) {
-                throw new UserModificationException(jwtTokenUtils.getUserPhoneNumber(token), id);
-            }
-            userMapper.updateUserFromDto(userChangesDto, user);
-            userRepository.update(user);
-            return ResponseEntity.ok("Update user success");
-        } else {
-            throw new UserNotFoundException(id);
+    public ResponseEntity<?> updateUser(UserChangesDto userChangesDto, String token) throws UserNotFoundException, UserModificationException {
+        Optional<User> optionalUser = userRepository.findById(jwtTokenUtils.getUserId(token));
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException("Can't find user by token");
         }
+
+        User user = optionalUser.get();
+        userMapper.updateUserFromDto(userChangesDto, user);
+        userRepository.update(user);
+        return ResponseEntity.ok("Update user success");
+
     }
 
     @Transactional

@@ -1,14 +1,17 @@
 package org.senla.woodygray.model;
 
 import lombok.Data;
+import lombok.Getter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 @Data
 @Entity
 @Table(name = "offer", schema = "public")
+@Getter
 public class Offer {
     @Id
     @Column(name = "id")
@@ -23,9 +26,9 @@ public class Offer {
     @OneToMany(mappedBy = "offer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Photo> photos;
     @Column(name = "promotion_start")
-    private Date promotionBegin;
+    private LocalDate promotionBegin;
     @Column(name = "promotion_end")
-    private Date promotionEnd;
+    private LocalDate promotionEnd;
     private String title;
     private String description;
     private Double price;

@@ -4,6 +4,7 @@ package org.senla.woodygray.dtos.offer;
 import lombok.Data;
 import org.senla.woodygray.model.Photo;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class OfferDto {
     private Double price;
     private List<Photo> photos;
     private List<String> photosFilePath;
-    private Date promotionBegin;
-    private Date promotionEnd;
+    private LocalDate promotionBegin;
+    private LocalDate promotionEnd;
 
 }

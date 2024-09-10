@@ -11,13 +11,18 @@ import org.senla.woodygray.exceptions.*;
 import org.senla.woodygray.model.Offer;
 import org.senla.woodygray.model.User;
 import org.senla.woodygray.repository.OfferRepository;
+import org.senla.woodygray.util.JwtTokenUtils;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +32,7 @@ public class OfferService {
     private final OfferMapper offerMapper;
     private final UserService userService;
     private final PhotoMapper photoMapper;
+    private final JwtTokenUtils jwtTokenUtils;
 
     @Transactional
     public List<OfferSearchResponse> searchOffer(String keyword, Double minPrice, Double maxPrice) throws OfferSearchException {
@@ -38,24 +44,40 @@ public class OfferService {
             offers = offerRepository.findByTitleContainingOrDescriptionContaining(keyword, keyword);
         }
 
-        List<OfferSearchResponse> offerSearchResponses = offerMapper.toOfferSearchResponseList(offers);
+        LocalDate now = LocalDate.now();
+        List<Offer> sortedOffers = offers.stream()
+                .collect(Collectors.partitioningBy(
+                        offer -> offer.getPromotionEnd() != null && offer.getPromotionEnd().isAfter(now)
+                ))
+                .entrySet().stream()
+                .sorted(Map.Entry.<Boolean, List<Offer>>comparingByKey().reversed())
+                .flatMap(entry -> entry.getValue().stream())
+                .toList();
 
-        if (offerSearchResponses.isEmpty()) {
+        List<OfferSearchResponse> offerSearchResponses = offerMapper
+                .toOfferSearchResponseList(sortedOffers);
+
+        return createResultList(minPrice, maxPrice, offerSearchResponses);
+    }
+
+    private List<OfferSearchResponse> createResultList(Double minPrice, Double maxPrice, List<OfferSearchResponse> offers) {
+
+        if (offers.isEmpty()) {
             throw new OfferSearchException("Result offer list is empty");
         }
 
         if (maxPrice == null && minPrice == null) {
-            return offerSearchResponses;
+            return offers;
         } else if (maxPrice == null) {
-            return offerSearchResponses.stream()
+            return offers.stream()
                     .filter(o -> o.price().compareTo(minPrice) >= 0)
                     .toList();
         } else if (minPrice == null) {
-            return offerSearchResponses.stream()
+            return offers.stream()
                     .filter(o -> o.price().compareTo(maxPrice) <= 0)
                     .toList();
         } else {
-            return offerSearchResponses.stream()
+            return offers.stream()
                     .filter(o -> o.price().compareTo(minPrice) >= 0 &&
                             o.price().compareTo(maxPrice) <= 0)
                     .toList();
@@ -82,6 +104,7 @@ public class OfferService {
         offer.setId(null);
         offer.setUser(user);
         offer.setOfferStatus(offerStatusService.getPublishedStatus());
+        //TODO:попробовать кеш сделать
 
         offer.getPhotos()
                 .forEach(photo -> photo.setOffer(offer));
@@ -100,7 +123,7 @@ public class OfferService {
         }
 
         Offer offer = optionalOffer.get();
-        Long userId = userService.getUserIdFromToken(token);
+        Long userId = jwtTokenUtils.getUserId(token);
         if (offer.getUser().getId() != userId) {
             throw new OfferChangeStatusException("Only host of offer can change status");
         }
@@ -114,7 +137,7 @@ public class OfferService {
     }
 
     @Transactional
-    public OfferUpdateResponse update(OfferUpdateRequest offerDto, Long offerId) {
+    public OfferUpdateResponse update(OfferUpdateRequest offerDto, Long offerId, String token) {
 
         Optional<Offer> optionalOffer = offerRepository.findById(offerId);
         if (optionalOffer.isEmpty()) {
@@ -122,6 +145,9 @@ public class OfferService {
         }
 
         Offer offer = optionalOffer.get();
+        if (!offer.getUser().getId().equals(jwtTokenUtils.getUserId(token))) {
+            throw new HostException("Only host of offer can update status");
+        }
 
         offerMapper.updateOfferFromDto(offerDto, offer);
         if (offerDto.photos() != null) {
@@ -140,18 +166,22 @@ public class OfferService {
         return offerMapper.toOfferUpdateResponse(offer);
     }
 
+    public void update(Offer offer){
+        offerRepository.update(offer);
+    }
+
     @Transactional
-    public OfferUpdateResponse changePhotos(OfferUpdateRequest offerUpdateRequest, Long id) {
-        //TODO: сделать проверку на пользователя
-        if (offerUpdateRequest.photos() == null) {
-            throw new BadCredentialsException("offer photos is required");
-        }
+    public OfferUpdateResponse changePhotos(OfferUpdateRequest offerUpdateRequest, Long id, String token) {
+
         Optional<Offer> optionalOffer = offerRepository.findById(id);
         if (optionalOffer.isEmpty()) {
             throw new OfferUpdateException(String.format("can't find offer with id %s", id));
         }
 
         Offer offer = optionalOffer.get();
+        if (!offer.getUser().getId().equals(jwtTokenUtils.getUserId(token))) {
+            throw new HostException("Only host of offer can change photos");
+        }
         offerRepository.deletePhotosFromOffer(id);
 
         offer.setPhotos(photoMapper.toPhotos(offerUpdateRequest.photos()));
@@ -168,9 +198,9 @@ public class OfferService {
     }
 
     @Transactional
-    public List<OfferGetSoldResponse> getSold(String token) {
-        Long userId = userService.getUserIdFromToken(token);
-        List<Offer> offers = offerRepository.findSoldByUserId(userId);
+    public List<OfferGetSoldResponse> getSold(Long idUser) {
+        userService.findById(idUser);
+        List<Offer> offers = offerRepository.findSoldByUserId(idUser);
 
         return offerMapper.toOfferGetSoldResponseList(offers);
     }
