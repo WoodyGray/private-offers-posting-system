@@ -1,0 +1,83 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1-2
+      author: Woody Gray
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            tableExists:
+              tableName: user
+      changes:
+        - createTable:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: id_role
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: user_role
+                    references: role(id)
+              - column:
+                  name: phone_number
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: hash_password
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rating
+                  type: double
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: v1-2.1
+      author: Woody Gray
+      preConditions:
+        - onFail: MARK_RAN
+        - tableIsEmpty:
+            tableName: user
+      changes:
+        - loadData:
+            file: db/data/user-data.csv
+            separator: ","
+            tableName: user
+            columns:
+              - column:
+                  name: id_role
+                  type: NUMERIC
+              - column:
+                  name: phone_number
+                  type: STRING
+              - column:
+                  name: first_name
+                  type: STRING
+              - column:
+                  name: last_name
+                  type: STRING
+              - column:
+                  name: hash_password
+                  type: STRING
+              - column:
+                  name: rating
+                  type: NUMERIC

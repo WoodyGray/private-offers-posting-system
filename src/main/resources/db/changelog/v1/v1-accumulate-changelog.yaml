@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - include:
+      file: v1-create-role-table-changelog.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: v1-create-user-table-changelog.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: v1-create-offer-status-table-changelog.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: v1-create-offer-table-changelog.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: v1-create-photo-table-changelog.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: v1-create-comment-table-changelog.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: v1-create-review-table-changelog.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: v1-create-chat-message-table-changelog.yaml
+      relativeToChangelogFile: true

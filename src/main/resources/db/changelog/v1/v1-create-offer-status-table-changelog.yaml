@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1-3
+      author: Woody Gray
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            tableExists:
+              tableName: offer_status
+      changes:
+        - createTable:
+            tableName: offer_status
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: status_name
+                  type: varchar(15)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: v1-3.1
+      author: Woody Gray
+      preConditions:
+        - onFail: MARK_RAN
+        - tableIsEmpty:
+            tableName: offer_status
+      changes:
+        - loadData:
+            tableName: offer_status
+            file: db/data/offer-status-data.csv
